@@ -34,17 +34,17 @@
 
 ## 验收标准（可执行）
 
-- [x] **AC-1 评测闸门**：`.\.venv\Scripts\python.exe -m evals.run_eval` 输出 `10/10 passed (100.0%)` 且退出码 0。**2026-11-23 已复跑通过。**
-- [x] **AC-2 全链路**：`.\.venv\Scripts\python.exe -m scripts.smoke_test` 输出 JSON，`errors` 为空，`execution_actions` ≥ 1，`compliance.passed` 为 `true`。**2026-11-23 已复跑通过（5 条 dry-run 动作）。** 注意：直接跑 `python scripts\smoke_test.py` 会因 `sys.path` 不含仓库根而 `ModuleNotFoundError`，必须用 `-m`。
-- [x] **AC-3 API 契约**：启动 `uvicorn api.main:app` 后：
+- [x] AC-1（评测闸门）：`.\.venv\Scripts\python.exe -m evals.run_eval` 输出 `10/10 passed (100.0%)` 且退出码 0。**2026-11-23 已复跑通过。**
+- [x] AC-2（全链路）：`.\.venv\Scripts\python.exe -m scripts.smoke_test` 输出 JSON，`errors` 为空，`execution_actions` ≥ 1，`compliance.passed` 为 `true`。**2026-11-23 已复跑通过（5 条 dry-run 动作）。** 注意：直接跑 `python scripts\smoke_test.py` 会因 `sys.path` 不含仓库根而 `ModuleNotFoundError`，必须用 `-m`。
+- [x] AC-3（API 契约）：启动 `uvicorn api.main:app` 后：
   - `GET /health` → 200，`ok: true`；**已验证**
   - `GET /skus` → 5 个 SKU；**已验证**
   - `POST /runs {"sku_id":"SKU-003","mode":"full_chain"}` → `status: "awaiting_approval"`，`next` 含 `executor`；**已验证**
   - `POST /runs/{run_id}/approve {"decision":"approved"}` → `status: "completed"`，审计表有 `approval_decision`。**已验证（5 条执行动作，合规 100 分）**
-- [x] **AC-4 UI 主流程**：Streamlit 在 8501 启动；选 `SKU-003` + `full_chain` 运行；6 个 tab 均渲染；侧栏 Approve 后 Audit tab 出现 dry-run 记录；API 不可达时侧栏给出错误与启动命令，不白屏。**2026-11-24 用 `streamlit.testing.v1.AppTest` 验证：6 个 tab、run→awaiting_approval、approve→completed、5 条动作、无 error。视觉截图未做（本轮无 UI 改动）。**
-- [x] **AC-5 文档契约**：`AGENTS.md` ≤ 40 行；其中每条命令实际可跑；`CLAUDE.md` / `CODEBUDDY.md` / `GEMINI.md` / `.clinerules` / `.github/copilot-instructions.md` 只含一句重定向，不复制正文。**2026-11-24 核对：`AGENTS.md` 40 行；评测 / 冒烟 / CLI / compileall / uvicorn / streamlit 均实跑；重定向文件 2–5 行。**
-- [x] **AC-6 验证单一来源**：`docs/verify.md` 包含 AC-1 至 AC-4 的命令、预期输出与失败处理；`AGENTS.md` 只链接它，不复述。**2026-11-24 已生成，含实测样例与 `-m` 陷阱说明。**
-- [x] **AC-7 仓库卫生**：`git init` 后首次提交不包含 `.env`、`.venv/`、`data/chroma/`、`data/*.sqlite`、`evals/report.json`、`__pycache__/`；`git status` 干净。**2026-11-24 核对暂存清单 64 个文件，生成物均被忽略。**
+- [x] AC-4（UI 主流程）：Streamlit 在 8501 启动；选 `SKU-003` + `full_chain` 运行；6 个 tab 均渲染；侧栏 Approve 后 Audit tab 出现 dry-run 记录；API 不可达时侧栏给出错误与启动命令，不白屏。**2026-11-24 用 `streamlit.testing.v1.AppTest` 验证：6 个 tab、run→awaiting_approval、approve→completed、5 条动作、无 error。视觉截图未做（本轮无 UI 改动）。**
+- [x] AC-5（文档契约）：`AGENTS.md` ≤ 40 行；其中每条命令实际可跑；`CLAUDE.md` / `CODEBUDDY.md` / `GEMINI.md` / `.clinerules` / `.github/copilot-instructions.md` 只含一句重定向，不复制正文。**2026-11-24 核对：`AGENTS.md` 40 行；评测 / 冒烟 / CLI / compileall / uvicorn / streamlit 均实跑；重定向文件 2–5 行。**
+- [x] AC-6（验证单一来源）：`docs/verify.md` 包含 AC-1 至 AC-4 的命令、预期输出与失败处理；`AGENTS.md` 只链接它，不复述。**2026-11-24 已生成，含实测样例与 `-m` 陷阱说明。**
+- [x] AC-7（仓库卫生）：`git init` 后首次提交不包含 `.env`、`.venv/`、`data/chroma/`、`data/*.sqlite`、`evals/report.json`、`__pycache__/`；`git status` 干净。**2026-11-24 核对暂存清单 64 个文件，生成物均被忽略。**
 
 ## 现状地图（已有代码必填）
 
