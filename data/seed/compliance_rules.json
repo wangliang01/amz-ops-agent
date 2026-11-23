@@ -1,0 +1,190 @@
+[
+  {
+    "rule_id": "C-001",
+    "category": "prohibited_claim",
+    "check_type": "regex",
+    "pattern": "\\bbest\\s*seller\\b",
+    "severity": "block",
+    "description": "Amazon prohibits 'best seller' claims unless the product has the badge.",
+    "suggestion": "Remove the claim or reference the actual badge and category."
+  },
+  {
+    "rule_id": "C-002",
+    "category": "prohibited_claim",
+    "check_type": "regex",
+    "pattern": "(#\\s*1\\b|\\bnumber\\s+one\\b)",
+    "severity": "block",
+    "description": "Ranking claims such as '#1' or 'number one' require substantiation.",
+    "suggestion": "Remove the ranking claim and describe the product benefit instead."
+  },
+  {
+    "rule_id": "C-003",
+    "category": "prohibited_claim",
+    "check_type": "regex",
+    "pattern": "\\bamazon'?s?\\s+choice\\b",
+    "severity": "block",
+    "description": "Amazon's Choice is a badge and cannot be used as ad copy.",
+    "suggestion": "Remove the badge reference."
+  },
+  {
+    "rule_id": "C-004",
+    "category": "medical_claim",
+    "check_type": "regex",
+    "pattern": "\\bfda\\s+approved\\b",
+    "severity": "block",
+    "description": "FDA approval claims require documentation and are restricted.",
+    "suggestion": "Remove the claim unless you can provide the relevant clearance."
+  },
+  {
+    "rule_id": "C-005",
+    "category": "medical_claim",
+    "check_type": "regex",
+    "pattern": "\\b(cures?|treats?|prevents?)\\s+(cancer|disease|illness|infection|acne|pain|arthritis|diabetes|anxiety|insomnia|condition|symptoms?)\\b",
+    "severity": "block",
+    "description": "Medical treatment claims are not allowed for general products.",
+    "suggestion": "Describe the product function, not a medical outcome."
+  },
+  {
+    "rule_id": "C-006",
+    "category": "guarantee",
+    "check_type": "regex",
+    "pattern": "\\bguaranteed?\\b",
+    "severity": "warn",
+    "description": "Guarantee claims must be clearly disclosed and supportable.",
+    "suggestion": "Replace with a specific, supportable statement."
+  },
+  {
+    "rule_id": "C-007",
+    "category": "guarantee",
+    "check_type": "regex",
+    "pattern": "\\b100\\s*%",
+    "severity": "warn",
+    "description": "Absolute claims such as '100%' are difficult to substantiate.",
+    "suggestion": "Use a measured claim or remove the percentage."
+  },
+  {
+    "rule_id": "C-008",
+    "category": "certification",
+    "check_type": "regex",
+    "pattern": "\\beco[-\\s]?friendly\\b",
+    "severity": "warn",
+    "description": "Environmental claims require supporting documentation.",
+    "suggestion": "Remove the claim or link it to a specific certification."
+  },
+  {
+    "rule_id": "C-009",
+    "category": "certification",
+    "check_type": "regex",
+    "pattern": "\\bnon[-\\s]?toxic\\b",
+    "severity": "warn",
+    "description": "Safety claims require test evidence.",
+    "suggestion": "Replace with a material fact, such as 'food-grade silicone'."
+  },
+  {
+    "rule_id": "C-010",
+    "category": "certification",
+    "check_type": "regex",
+    "pattern": "\\bbpa[-\\s]?free\\b",
+    "severity": "warn",
+    "description": "BPA-free claims should be supported by test documentation.",
+    "suggestion": "Keep the claim only if you have current test evidence."
+  },
+  {
+    "rule_id": "C-011",
+    "category": "guarantee",
+    "check_type": "regex",
+    "pattern": "\\blifetime\\s+warranty\\b",
+    "severity": "warn",
+    "description": "Lifetime warranty terms must be disclosed and supportable.",
+    "suggestion": "State the actual warranty period and terms."
+  },
+  {
+    "rule_id": "C-012",
+    "category": "origin",
+    "check_type": "regex",
+    "pattern": "\\bmade\\s+in\\s+the?\\s*usa\\b",
+    "severity": "warn",
+    "description": "Country-of-origin claims require documentation.",
+    "suggestion": "Remove the claim unless the product qualifies."
+  },
+  {
+    "rule_id": "C-013",
+    "category": "promotion",
+    "check_type": "regex",
+    "pattern": "\\bfree\\s+shipping\\b",
+    "severity": "warn",
+    "description": "Shipping promises must match the actual offer.",
+    "suggestion": "Remove the promise or confirm it is active."
+  },
+  {
+    "rule_id": "C-014",
+    "category": "promotion",
+    "check_type": "regex",
+    "pattern": "\\blimited\\s+time\\b",
+    "severity": "warn",
+    "description": "Urgency claims must be truthful and time-bound.",
+    "suggestion": "Remove the urgency language or add a real end date."
+  },
+  {
+    "rule_id": "C-015",
+    "category": "medical_claim",
+    "check_type": "regex",
+    "pattern": "\\bdoctor\\s+recommended\\b",
+    "severity": "warn",
+    "description": "Endorsement claims require evidence and permission.",
+    "suggestion": "Remove the endorsement claim."
+  },
+  {
+    "rule_id": "C-016",
+    "category": "medical_claim",
+    "check_type": "regex",
+    "pattern": "\\bmedical\\s+grade\\b",
+    "severity": "warn",
+    "description": "Medical-grade claims require a defined standard.",
+    "suggestion": "Use a specific material or test standard instead."
+  },
+  {
+    "rule_id": "C-017",
+    "category": "format",
+    "check_type": "max_length",
+    "field": "title",
+    "value": 200,
+    "severity": "block",
+    "description": "Titles must be 200 characters or fewer.",
+    "suggestion": "Shorten the title and keep the most important attributes."
+  },
+  {
+    "rule_id": "C-018",
+    "category": "format",
+    "check_type": "max_items",
+    "field": "bullets",
+    "value": 5,
+    "severity": "block",
+    "description": "Listings support up to five bullet points.",
+    "suggestion": "Merge or remove extra bullets."
+  },
+  {
+    "rule_id": "C-019",
+    "category": "format",
+    "check_type": "all_caps_field",
+    "severity": "warn",
+    "description": "Entire fields in all caps reduce readability and can be rejected.",
+    "suggestion": "Use sentence case or short headline casing."
+  },
+  {
+    "rule_id": "C-020",
+    "category": "format",
+    "check_type": "url_or_contact",
+    "severity": "block",
+    "description": "Listings cannot contain external URLs or seller contact information.",
+    "suggestion": "Remove links, email addresses, and phone numbers."
+  },
+  {
+    "rule_id": "C-021",
+    "category": "format",
+    "check_type": "emoji",
+    "severity": "warn",
+    "description": "Emojis are not recommended in listing copy.",
+    "suggestion": "Remove emojis and use plain text."
+  }
+]

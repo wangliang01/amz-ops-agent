@@ -1,0 +1,277 @@
+[
+  {
+    "sku_id": "SKU-001",
+    "keywords": [
+      {
+        "keyword": "french press",
+        "search_volume": 74000,
+        "relevance": 0.98
+      },
+      {
+        "keyword": "stainless steel french press",
+        "search_volume": 18100,
+        "relevance": 0.95
+      },
+      {
+        "keyword": "insulated coffee press",
+        "search_volume": 9900,
+        "relevance": 0.91
+      },
+      {
+        "keyword": "coffee maker",
+        "search_volume": 165000,
+        "relevance": 0.72
+      },
+      {
+        "keyword": "34 oz french press",
+        "search_volume": 2400,
+        "relevance": 0.88
+      },
+      {
+        "keyword": "camping coffee press",
+        "search_volume": 5400,
+        "relevance": 0.84
+      },
+      {
+        "keyword": "double wall french press",
+        "search_volume": 3600,
+        "relevance": 0.9
+      },
+      {
+        "keyword": "coffee press",
+        "search_volume": 22200,
+        "relevance": 0.93
+      },
+      {
+        "keyword": "french press coffee maker",
+        "search_volume": 12100,
+        "relevance": 0.96
+      },
+      {
+        "keyword": "travel french press",
+        "search_volume": 2900,
+        "relevance": 0.82
+      }
+    ]
+  },
+  {
+    "sku_id": "SKU-002",
+    "keywords": [
+      {
+        "keyword": "silicone baking mat",
+        "search_volume": 49500,
+        "relevance": 0.98
+      },
+      {
+        "keyword": "baking mat set",
+        "search_volume": 8100,
+        "relevance": 0.93
+      },
+      {
+        "keyword": "non stick oven liner",
+        "search_volume": 6600,
+        "relevance": 0.88
+      },
+      {
+        "keyword": "cookie baking mat",
+        "search_volume": 4400,
+        "relevance": 0.9
+      },
+      {
+        "keyword": "reusable baking sheet",
+        "search_volume": 3900,
+        "relevance": 0.86
+      },
+      {
+        "keyword": "pastry mat",
+        "search_volume": 14800,
+        "relevance": 0.79
+      },
+      {
+        "keyword": "silicone mat for baking",
+        "search_volume": 12100,
+        "relevance": 0.94
+      },
+      {
+        "keyword": "oven liner",
+        "search_volume": 22200,
+        "relevance": 0.71
+      },
+      {
+        "keyword": "baking supplies",
+        "search_volume": 90500,
+        "relevance": 0.63
+      },
+      {
+        "keyword": "half sheet baking mat",
+        "search_volume": 2900,
+        "relevance": 0.89
+      }
+    ]
+  },
+  {
+    "sku_id": "SKU-003",
+    "keywords": [
+      {
+        "keyword": "portable blender",
+        "search_volume": 110000,
+        "relevance": 0.98
+      },
+      {
+        "keyword": "personal blender",
+        "search_volume": 74000,
+        "relevance": 0.95
+      },
+      {
+        "keyword": "usb blender",
+        "search_volume": 18100,
+        "relevance": 0.92
+      },
+      {
+        "keyword": "blender for smoothies",
+        "search_volume": 40500,
+        "relevance": 0.94
+      },
+      {
+        "keyword": "travel blender",
+        "search_volume": 8100,
+        "relevance": 0.89
+      },
+      {
+        "keyword": "cordless blender",
+        "search_volume": 5400,
+        "relevance": 0.87
+      },
+      {
+        "keyword": "portable blender for shakes",
+        "search_volume": 9900,
+        "relevance": 0.96
+      },
+      {
+        "keyword": "small blender",
+        "search_volume": 33100,
+        "relevance": 0.78
+      },
+      {
+        "keyword": "blender bottle",
+        "search_volume": 22200,
+        "relevance": 0.7
+      },
+      {
+        "keyword": "smoothie blender",
+        "search_volume": 27100,
+        "relevance": 0.91
+      }
+    ]
+  },
+  {
+    "sku_id": "SKU-004",
+    "keywords": [
+      {
+        "keyword": "bamboo cutting board",
+        "search_volume": 60500,
+        "relevance": 0.98
+      },
+      {
+        "keyword": "cutting board set",
+        "search_volume": 18100,
+        "relevance": 0.94
+      },
+      {
+        "keyword": "wood cutting board",
+        "search_volume": 33100,
+        "relevance": 0.91
+      },
+      {
+        "keyword": "juice groove cutting board",
+        "search_volume": 4400,
+        "relevance": 0.89
+      },
+      {
+        "keyword": "kitchen chopping board",
+        "search_volume": 8100,
+        "relevance": 0.86
+      },
+      {
+        "keyword": "serving board",
+        "search_volume": 12100,
+        "relevance": 0.74
+      },
+      {
+        "keyword": "bamboo chopping board",
+        "search_volume": 9900,
+        "relevance": 0.95
+      },
+      {
+        "keyword": "large cutting board",
+        "search_volume": 14800,
+        "relevance": 0.84
+      },
+      {
+        "keyword": "cutting boards for kitchen",
+        "search_volume": 27100,
+        "relevance": 0.9
+      },
+      {
+        "keyword": "wooden cutting board set",
+        "search_volume": 6600,
+        "relevance": 0.92
+      }
+    ]
+  },
+  {
+    "sku_id": "SKU-005",
+    "keywords": [
+      {
+        "keyword": "reusable storage bags",
+        "search_volume": 40500,
+        "relevance": 0.98
+      },
+      {
+        "keyword": "reusable food bags",
+        "search_volume": 22200,
+        "relevance": 0.95
+      },
+      {
+        "keyword": "leakproof snack bags",
+        "search_volume": 5400,
+        "relevance": 0.9
+      },
+      {
+        "keyword": "silicone food bags",
+        "search_volume": 18100,
+        "relevance": 0.88
+      },
+      {
+        "keyword": "travel food bags",
+        "search_volume": 3600,
+        "relevance": 0.82
+      },
+      {
+        "keyword": "freezer bags reusable",
+        "search_volume": 4400,
+        "relevance": 0.86
+      },
+      {
+        "keyword": "reusable sandwich bags",
+        "search_volume": 9900,
+        "relevance": 0.94
+      },
+      {
+        "keyword": "eco friendly food storage",
+        "search_volume": 8100,
+        "relevance": 0.79
+      },
+      {
+        "keyword": "lunch bags for kids",
+        "search_volume": 14800,
+        "relevance": 0.68
+      },
+      {
+        "keyword": "food storage containers",
+        "search_volume": 74000,
+        "relevance": 0.61
+      }
+    ]
+  }
+]
