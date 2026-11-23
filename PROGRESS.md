@@ -30,7 +30,7 @@ T-001 完成；不扩功能，下一步按待决策项选。
 | ID | 任务 | 提交 | 验证证据 |
 |---|---|---|---|
 | T-000 | SPEC / AGENTS / 验证说明 / 重定向 / git 初始化 | `b693674` | AC-1..AC-7（见 `SPEC.md`） |
-| T-001 | 替换 Streamlit `use_container_width` | 待提交 | 8501 返回 200；6 tabs；5 条 dry-run；API 不可达兜底；裁判 4/4 达成 |
+| T-001 | 替换 Streamlit `use_container_width` | `6c3900e` | 8501 返回 200；6 tabs；5 条 dry-run；API 不可达兜底；裁判 4/4 达成 |
 
 ## 阻塞 / 待决策
 | 问题 | 需要谁决定 | 影响范围 |

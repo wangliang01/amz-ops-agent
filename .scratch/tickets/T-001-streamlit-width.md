@@ -47,7 +47,7 @@ Streamlit 1.67 对 `use_container_width` 发出弃用警告：提示 2025-12-31 
 
 ## 完成记录
 
-- 提交：待提交
+- 提交：`6c3900e`
 - 证据（输出 / 截图 / 响应）：
   - AC-1：`streamlit run ... --server.port 8501` → HTTP 200；8501 与 AppTest 日志均无 `use_container_width` 文案。
   - AC-2：AppTest `MAIN_FLOW_OK`；`tabs: ['Insight', 'Listing', 'Compliance', 'Ads', 'Audit', 'Metrics']`；`status: completed actions: 5 all_dry_run: True`。
