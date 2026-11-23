@@ -13,6 +13,7 @@ data/*.sqlite-*
 .pytest_cache/
 evals/report.json
 .scratch/ui/
+.scratch/decisions.tsv
 .DS_Store
 Thumbs.db
 .idea/

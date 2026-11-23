@@ -44,7 +44,7 @@ def show_table(rows: list[dict[str, Any]] | None) -> None:
     if not rows:
         st.caption("No rows.")
         return
-    st.dataframe(rows, use_container_width=True, hide_index=True)
+    st.dataframe(rows, width="stretch", hide_index=True)
 
 
 st.title("amz-ops-agent")
@@ -102,7 +102,7 @@ with st.sidebar:
     if st.button(
         "Run pipeline",
         type="primary",
-        use_container_width=True,
+        width="stretch",
         disabled=run_disabled,
     ):
         with st.spinner("Running agents... this can take 30-60s with an LLM."):
@@ -120,7 +120,7 @@ with st.sidebar:
         st.divider()
         st.caption("HITL gate: the executor is paused until you decide.")
         approve_col, reject_col = st.columns(2)
-        if approve_col.button("Approve", type="primary", use_container_width=True):
+        if approve_col.button("Approve", type="primary", width="stretch"):
             with st.spinner("Executing dry-run..."):
                 try:
                     st.session_state["snapshot"] = post(
@@ -131,7 +131,7 @@ with st.sidebar:
                     st.error(f"Approval failed: {exc}")
                 else:
                     st.rerun()
-        if reject_col.button("Reject", use_container_width=True):
+        if reject_col.button("Reject", width="stretch"):
             try:
                 st.session_state["snapshot"] = post(
                     f"/runs/{snapshot['run_id']}/approve",
