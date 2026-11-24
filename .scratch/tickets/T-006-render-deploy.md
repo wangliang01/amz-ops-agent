@@ -25,8 +25,8 @@
 
 ## 验收标准
 
-- [ ] AC-1：`render.yaml` 定义 `amz-ops-api` 与 `amz-ops-web` 两个 Docker Web Service；API 健康检查 `/health`，Web 健康检查 `/_stcore/health`。
-- [ ] AC-2：API 端口 `8000` 与 Dockerfile CMD 一致；Web `dockerCommand` 端口 `8501` 与 `PORT` 一致；`API_BASE_URL` 指向 API 服务 URL。
+- [ ] AC-1：`render.yaml` 定义 `amz-ops-api` 与 `amz-ops-web` 两个 Render Python Web Service；API 健康检查 `/health`，Web 健康检查 `/_stcore/health`。
+- [ ] AC-2：两个服务均用 Render `$PORT` 启动；API `uvicorn api.main:app`，Web `streamlit run app/streamlit_app.py`；`API_BASE_URL` 指向 API 服务 URL。Render 不使用 Docker（本地 Dockerfile 保留）。
 - [ ] AC-3：`OPENAI_API_KEY` 使用 `sync: false`，`render.yaml` / 工作流 / 文档不含任何真实 key / `.env` 内容。
 - [ ] AC-4：文档说明免费实例会休眠、SQLite 不持久，以及公开部署的鉴权 / 配额风险；记录用户明确要求公开体验的边界。
 - [ ] AC-5：YAML 可被 `yaml.safe_load` 解析，服务名与设置符合预期；现有测试与编译不受影响。
@@ -38,19 +38,20 @@
 
 - 提交：`49fbc32`
 - 证据（2026-11-24 实测）：
-  - `yaml.safe_load`：服务 `['amz-ops-api','amz-ops-web']`；`autoDeployTrigger` 为字符串 `"off"`；API `/health`、Web `/_stcore/health`。
-  - 端口：API `PORT=8000` 对齐 Dockerfile CMD；Web `PORT=8501` 对齐 `dockerCommand`。
+  - `yaml.safe_load`：服务 `['amz-ops-api','amz-ops-web']`；`runtime=python`、`plan=free`、`autoDeployTrigger="off"`；API `/health`、Web `/_stcore/health`。
+  - 启动：两个服务均绑定 Render `$PORT`；API `uvicorn api.main:app`，Web `streamlit run app/streamlit_app.py`。
   - `OPENAI_API_KEY` 为 `sync: false`；对 render / workflow / docs / README / ticket 扫描未发现 key 或 `srv-` hook。
   - 35 个 `.py` 语法 `ast.parse` 通过；本次 diff 无业务代码。
   - `.dockerignore` 补 `.env.*`、`.scratch/`、`evals/llm_report.json`。
-- 运行态待验证（非配置阻塞）：Docker 镜像构建、Render free 实例内存、实际 Actions 触发（需 Render 服务与 secrets）。
+- 运行态待验证（非配置阻塞）：Render Blueprint 首次创建、免费实例内存、实际 Actions 触发（需 Render 服务与 secrets）。
+- Render 现场发现：Docker 运行时在免费计划下触发付款信息弹窗；已改为原生 Python runtime。
 
 ## 裁判记录
 
 | AC | 判定 | 证据 |
 |---|---|---|
-| AC-1 | 达成 | `yaml.safe_load`：两个 `web/docker/free`；健康检查 `/health`、`/_stcore/health` |
-| AC-2 | 达成 | Dockerfile `:16` 端口 8000 对齐 `PORT=8000`；Web `--server.port 8501` 对齐 `PORT=8501` |
+| AC-1 | 达成 | `yaml.safe_load`：两个 `web/python/free`；健康检查 `/health`、`/_stcore/health` |
+| AC-2 | 达成 | 两个服务均用 Render `$PORT`；API `uvicorn api.main:app`，Web `streamlit run app/streamlit_app.py`；`API_BASE_URL` 指向 API |
 | AC-3 | 达成 | `OPENAI_API_KEY` `sync: false`；密钥/`srv-` hook 扫描无命中；`.env` 未跟踪 |
 | AC-4 | 达成 | `docs/deploy-render.md` 写明休眠、SQLite 不持久、无鉴权/配额风险；SPEC 风险 5 已记录用户批准的公开演示例外 |
 | AC-5 | 达成 | YAML 解析成功；35 个 `.py` 语法通过；无 `.py` 改动 |

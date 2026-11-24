@@ -60,7 +60,7 @@ docker compose up --build
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/wangliang01/amz-ops-agent)
 
-仓库根目录提供 `render.yaml`，可在 Render 一次创建两个 Docker Web Service：
+仓库根目录提供 `render.yaml`，可在 Render 一次创建两个 **Python Web Service**（原生运行时，不依赖 Docker 免费额度）：
 
 - `amz-ops-api`：FastAPI / LangGraph，健康检查 `/health`
 - `amz-ops-web`：Streamlit 演示台，健康检查 `/_stcore/health`

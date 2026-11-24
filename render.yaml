@@ -1,18 +1,18 @@
 services:
   - type: web
     name: amz-ops-api
-    runtime: docker
+    runtime: python
     plan: free
     branch: main
-    dockerfilePath: ./Dockerfile
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     # GitHub Actions triggers deploys through Render deploy hooks.
     # Keep Render's own auto-deploy off to avoid double deploys.
     autoDeployTrigger: "off"
     envVars:
-      # Render routes public traffic to this port.
-      - key: PORT
-        value: "8000"
+      - key: PYTHON_VERSION
+        value: "3.11.8"
       - key: LLM_ENABLED
         value: "true"
       # Set this in the Render dashboard during Blueprint creation.
@@ -43,16 +43,16 @@ services:
 
   - type: web
     name: amz-ops-web
-    runtime: docker
+    runtime: python
     plan: free
     branch: main
-    dockerfilePath: ./Dockerfile
-    dockerCommand: streamlit run app/streamlit_app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: streamlit run app/streamlit_app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
     healthCheckPath: /_stcore/health
     autoDeployTrigger: "off"
     envVars:
-      - key: PORT
-        value: "8501"
+      - key: PYTHON_VERSION
+        value: "3.11.8"
       # If either Render service name changes, update this URL too.
       - key: API_BASE_URL
         value: https://amz-ops-api.onrender.com

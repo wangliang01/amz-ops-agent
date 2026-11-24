@@ -1,11 +1,13 @@
 # 部署到 Render
 
-仓库根目录的 `render.yaml` 定义两个 Docker Web Service：
+仓库根目录的 `render.yaml` 定义两个 Render **Python Web Service**（原生 Python 运行时，不使用 Docker；免费实例支持）：
 
 | Service | 作用 | 端口 | 健康检查 |
 |---|---|---|---|
-| `amz-ops-api` | FastAPI + LangGraph | `8000` | `/health` |
-| `amz-ops-web` | Streamlit 演示台 | `8501` | `/_stcore/health` |
+| `amz-ops-api` | FastAPI + LangGraph | Render `$PORT` | `/health` |
+| `amz-ops-web` | Streamlit 演示台 | Render `$PORT` | `/_stcore/health` |
+
+本地 `Dockerfile` / `docker-compose.yml` 仍保留，用于本机容器化运行；Render 不读取 Docker 配置。
 
 ## 第一次部署
 
