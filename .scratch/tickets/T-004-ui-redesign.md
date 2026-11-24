@@ -1,6 +1,6 @@
 # [T-004] UI 中文改版（unslop）
 
-- **Status**: Done (judge pass; pending commit)
+- **Status**: Done
 - **Depends On**: 无
 - **对应 SPEC**: `SPEC-004-ui-redesign.md` AC-1..AC-7
 - **预估轮数**: 8
