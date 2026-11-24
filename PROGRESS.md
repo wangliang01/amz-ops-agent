@@ -8,13 +8,13 @@
 - 项目：Amazon 卖家多智能体运营副驾驶演示（LangGraph + RAG + FastAPI + Streamlit）
 - 当前状态：可跑；无 LLM key 时走规则兜底
 - 启动：`.\run.ps1`（API :8000 + UI :8501）
-- 上次验证：`-m evals.run_eval` → 10/10；`-m scripts.smoke_test` → 5 条 dry-run；API 与 AppTest 全流程通过（2026-11-24）
-- 最近决策：合成数据 + dry-run + 人工审批，见 `docs/adr/ADR-001-demo-boundaries.md`
-- 下一步：无待办；真实 LLM 路径与 HITL 持久化待决策
+- 上次验证：`-m evals.run_eval` → 10/10；`-m scripts.smoke_test` → 5 条 dry-run；`scripts/verify_hitl_restart.py` → `HITL_RESTART_OK`（2026-11-24）
+- 最近决策：HITL checkpoint 用官方 `SqliteSaver`（`ADR-002`）；演示边界见 `ADR-001`
+- 下一步：无待办；真实 LLM 回归 / checkpoint GC 待决策
 - 未决问题：`.env` 是否启用 LLM / embedding（未读取，避免接触密钥）
 
 ## 当前迭代
-T-001 完成；不扩功能，下一步按待决策项选。
+T-002 完成；HITL 跨重启持久化已落地，不扩功能。
 
 ## 进行中
 | ID | 任务 | 开始时间 |
@@ -31,14 +31,16 @@ T-001 完成；不扩功能，下一步按待决策项选。
 |---|---|---|---|
 | T-000 | SPEC / AGENTS / 验证说明 / 重定向 / git 初始化 | `b693674` | AC-1..AC-7（见 `SPEC.md`） |
 | T-001 | 替换 Streamlit `use_container_width` | `6c3900e` | 8501 返回 200；6 tabs；5 条 dry-run；API 不可达兜底；裁判 4/4 达成 |
+| T-002 | HITL 待审批状态跨 API 重启持久化 | 待提交 | 重启后 awaiting_approval / approve / reject / 幂等；eval 10/10；裁判 8/8 达成 |
 
 ## 阻塞 / 待决策
 | 问题 | 需要谁决定 | 影响范围 |
 |---|---|---|
 | 是否投入真实 LLM 回归与成本 | 用户 | 评测可信度 / 费用 |
-| HITL 状态是否需要跨重启持久化 | 用户 | API 可靠性 |
+| checkpoint 库是否需要保留期 / GC | 用户 | 磁盘增长 / 演示数据 |
+| 是否需要多 worker（改用 Postgres checkpoint） | 用户 | 部署形态 |
 
 ## 交接
-- 上次停在哪：T-001 完成并提交；业务逻辑未变。
-- 下一步：决定是否补真实 LLM 回归，或做 HITL 跨重启持久化（需另立 SPEC）。
-- 不要重复的尝试 / 已否决的方案：不接真实 SP-API / Ads API；不绕过审批；不把 demo 包装成生产系统。
+- 上次停在哪：T-002 完成并提交；HITL checkpoint 已跨重启持久化。
+- 下一步：补真实 LLM 回归，或按待决策项做 checkpoint GC / 多 worker。
+- 不要重复的尝试 / 已否决的方案：不接真实 SP-API / Ads API；不绕过审批；不把 demo 包装成生产系统；不自写 checkpoint saver。

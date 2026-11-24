@@ -6,11 +6,13 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
+from langgraph.checkpoint.sqlite import SqliteSaver
 from pydantic import BaseModel, Field
 
 from agent.graph import build_graph
 from agent.services import build_services
 from core import db
+from core.config import settings
 
 services = None
 graph = None
@@ -21,8 +23,10 @@ async def lifespan(_app: FastAPI):
     global services, graph
     db.init_db()
     services = build_services()
-    graph = build_graph(services)
-    yield
+    settings.checkpoint_db_path.parent.mkdir(parents=True, exist_ok=True)
+    with SqliteSaver.from_conn_string(str(settings.checkpoint_db_path)) as checkpointer:
+        graph = build_graph(services, checkpointer)
+        yield
 
 
 app = FastAPI(title="amz-ops-agent", version="0.1.0", lifespan=lifespan)

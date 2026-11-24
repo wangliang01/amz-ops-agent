@@ -104,6 +104,22 @@ compliance: True 100
 errors: []
 ```
 
+### 3.3 HITL 重启持久化
+
+```powershell
+.\.venv\Scripts\python.exe scripts\verify_hitl_restart.py
+```
+
+期望：`HITL_RESTART_OK <run_a> <run_b>`。脚本用临时 `runs.sqlite` / `checkpoints.sqlite`，起停 API 三次，验证：
+
+- 停/起后 `GET /runs/{id}` 仍为 `awaiting_approval`，`next` 为 `["executor"]`；
+- 重启后 Approve → `completed`，`execution_log` 5 条 `dry_run_success`，审计 5 条 `execute_dry_run`；
+- 再次重启后重复 Approve 幂等，执行记录不增加；
+- 重启后 Reject → `completed`，`execution_log` 只有 1 条 `skip`，审计有 `execute_skipped`、无 `execute_dry_run`；
+- checkpoint 库含 `checkpoints` 表。
+
+默认 API 使用 `data/checkpoints.sqlite`；该文件及 `-wal` / `-shm` 已被 `.gitignore` 的 `data/*.sqlite*` 覆盖。
+
 ## 4. UI 验收（有界面时必填）
 
 本轮（文档回填）**没有 UI 改动**，因此未做 4 视口截图。任何 UI 改动必须补齐：

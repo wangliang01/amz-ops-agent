@@ -22,7 +22,16 @@ class Settings:
     root: Path = ROOT
     data_dir: Path = ROOT / "data" / "seed"
     chroma_dir: Path = ROOT / "data" / "chroma"
-    db_path: Path = ROOT / "data" / "runs.sqlite"
+    db_path: Path = field(
+        default_factory=lambda: Path(
+            os.getenv("RUNS_DB_PATH", str(ROOT / "data" / "runs.sqlite"))
+        )
+    )
+    checkpoint_db_path: Path = field(
+        default_factory=lambda: Path(
+            os.getenv("CHECKPOINT_DB_PATH", str(ROOT / "data" / "checkpoints.sqlite"))
+        )
+    )
 
     llm_enabled: bool = field(default_factory=lambda: _env_bool("LLM_ENABLED", True))
     openai_api_key: str = field(default_factory=lambda: os.getenv("OPENAI_API_KEY", "").strip())

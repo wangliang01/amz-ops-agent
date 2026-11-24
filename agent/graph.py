@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 
@@ -25,7 +26,10 @@ def route_after_compliance(state: AgentState) -> str:
     return "ads" if state.get("mode") == "full_chain" else "executor"
 
 
-def build_graph(services: Services):
+def build_graph(
+    services: Services,
+    checkpointer: BaseCheckpointSaver | None = None,
+):
     builder = StateGraph(AgentState)
     builder.add_node("supervisor", make_supervisor_node(services))
     builder.add_node("insight", make_insight_node(services))
@@ -51,6 +55,6 @@ def build_graph(services: Services):
     builder.add_edge("executor", END)
 
     return builder.compile(
-        checkpointer=MemorySaver(),
+        checkpointer=checkpointer or MemorySaver(),
         interrupt_before=["executor"],
     )
