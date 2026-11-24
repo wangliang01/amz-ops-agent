@@ -56,6 +56,17 @@ docker compose up --build
 
 > 本机 Docker daemon 未启动，镜像构建未验证；`docker compose config` 已通过。
 
+### Render（可选）
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/wangliang01/amz-ops-agent)
+
+仓库根目录提供 `render.yaml`，可在 Render 一次创建两个 Docker Web Service：
+
+- `amz-ops-api`：FastAPI / LangGraph，健康检查 `/health`
+- `amz-ops-web`：Streamlit 演示台，健康检查 `/_stcore/health`
+
+点击上方按钮，在 Render Dashboard 授权仓库即可创建。之后由 GitHub Actions（`.github/workflows/deploy-render.yml`）通过 Render Deploy Hook 触发部署；`OPENAI_API_KEY` 只在 Render 环境变量中填写，不要提交到仓库；留空时走规则兜底。免费实例会休眠且 SQLite 不持久，公开部署的鉴权与配额风险见 [`docs/deploy-render.md`](docs/deploy-render.md)。
+
 ---
 
 ## LLM 配置

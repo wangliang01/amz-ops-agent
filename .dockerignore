@@ -2,9 +2,12 @@
 __pycache__/
 *.pyc
 .env
+.env.*
 data/chroma/
 data/*.sqlite
 data/*.sqlite-*
 evals/report.json
+evals/llm_report.json
+.scratch/
 .streamlit/
 .git/

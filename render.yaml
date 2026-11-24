@@ -1,0 +1,58 @@
+services:
+  - type: web
+    name: amz-ops-api
+    runtime: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    # GitHub Actions triggers deploys through Render deploy hooks.
+    # Keep Render's own auto-deploy off to avoid double deploys.
+    autoDeployTrigger: "off"
+    envVars:
+      # Render routes public traffic to this port.
+      - key: PORT
+        value: "8000"
+      - key: LLM_ENABLED
+        value: "true"
+      # Set this in the Render dashboard during Blueprint creation.
+      # Leave empty to run the rule-based fallback only.
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_BASE_URL
+        value: https://apihub.agnes-ai.com/v1
+      - key: CHAT_MODEL
+        value: agnes-3.0-flash
+      - key: CHEAP_MODEL
+        value: agnes-3.0-flash
+      - key: EMBEDDING_ENABLED
+        value: "false"
+      - key: MODEL_PRICE_INPUT
+        value: "0.05"
+      - key: MODEL_PRICE_OUTPUT
+        value: "0.15"
+    # Free instances have no persistent disk. SQLite runs/checkpoints reset on
+    # restart or deploy. To persist them, upgrade this service and add:
+    # disk:
+    #   name: amz-ops-data
+    #   mountPath: /app/data/runtime
+    #   sizeGB: 1
+    # plus:
+    #   RUNS_DB_PATH=/app/data/runtime/runs.sqlite
+    #   CHECKPOINT_DB_PATH=/app/data/runtime/checkpoints.sqlite
+
+  - type: web
+    name: amz-ops-web
+    runtime: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerCommand: streamlit run app/streamlit_app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true
+    healthCheckPath: /_stcore/health
+    autoDeployTrigger: "off"
+    envVars:
+      - key: PORT
+        value: "8501"
+      # If either Render service name changes, update this URL too.
+      - key: API_BASE_URL
+        value: https://amz-ops-api.onrender.com

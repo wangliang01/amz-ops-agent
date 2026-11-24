@@ -1,0 +1,39 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: render-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploys
+        env:
+          API_HOOK: ${{ secrets.RENDER_API_DEPLOY_HOOK }}
+          WEB_HOOK: ${{ secrets.RENDER_WEB_DEPLOY_HOOK }}
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in API WEB; do
+            var="${name}_HOOK"
+            hook="${!var:-}"
+            if [ -z "$hook" ]; then
+              echo "::warning::$var is not configured; skipping ${name} deploy. See docs/deploy-render.md."
+              missing=1
+              continue
+            fi
+            echo "Triggering ${name} deploy"
+            curl -fsS --retry 3 --retry-delay 5 -X POST "$hook" > /dev/null
+          done
+          if [ "$missing" -eq 1 ]; then
+            echo "Configure both Render deploy hooks as GitHub Actions secrets to enable deploys."
+          fi
