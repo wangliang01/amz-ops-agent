@@ -41,7 +41,7 @@
   - `GET /skus` → 5 个 SKU；**已验证**
   - `POST /runs {"sku_id":"SKU-003","mode":"full_chain"}` → `status: "awaiting_approval"`，`next` 含 `executor`；**已验证**
   - `POST /runs/{run_id}/approve {"decision":"approved"}` → `status: "completed"`，审计表有 `approval_decision`。**已验证（5 条执行动作，合规 100 分）**
-- [x] AC-4（UI 主流程）：Streamlit 在 8501 启动；选 `SKU-003` + `full_chain` 运行；6 个 tab 均渲染；侧栏 Approve 后 Audit tab 出现 dry-run 记录；API 不可达时侧栏给出错误与启动命令，不白屏。**2026-11-24 用 `streamlit.testing.v1.AppTest` 验证：6 个 tab、run→awaiting_approval、approve→completed、5 条动作、无 error。视觉截图未做（本轮无 UI 改动）。**
+- [x] AC-4（UI 主流程）：Streamlit 在 8501 启动；选 `SKU-003` + `full_chain` 运行；6 个 tab 均渲染；侧栏 Approve 后 Audit tab 出现 dry-run 记录；API 不可达时侧栏给出错误与启动命令，不白屏。**2026-11-24 用 `streamlit.testing.v1.AppTest` 验证：6 个 tab、run→awaiting_approval、approve→completed、5 条动作、无 error。T-004 已完成中文 UI 改版，视觉验收见 `SPEC-004-ui-redesign.md` 与 `.scratch/ui/T-004/`。**
 - [x] AC-5（文档契约）：`AGENTS.md` ≤ 40 行；其中每条命令实际可跑；`CLAUDE.md` / `CODEBUDDY.md` / `GEMINI.md` / `.clinerules` / `.github/copilot-instructions.md` 只含一句重定向，不复制正文。**2026-11-24 核对：`AGENTS.md` 40 行；评测 / 冒烟 / CLI / compileall / uvicorn / streamlit 均实跑；重定向文件 2–5 行。**
 - [x] AC-6（验证单一来源）：`docs/verify.md` 包含 AC-1 至 AC-4 的命令、预期输出与失败处理；`AGENTS.md` 只链接它，不复述。**2026-11-24 已生成，含实测样例与 `-m` 陷阱说明。**
 - [x] AC-7（仓库卫生）：`git init` 后首次提交不包含 `.env`、`.venv/`、`data/chroma/`、`data/*.sqlite`、`evals/report.json`、`__pycache__/`；`git status` 干净。**2026-11-24 核对暂存清单 64 个文件，生成物均被忽略。**
@@ -114,10 +114,10 @@ flowchart LR
 
 ### UI 线框 / 路由（有 UI 时）
 
-- **UI 技能**：`unslop`（已有界面；**本轮不安装、不调用**。选它是因为它能吃 URL / 截图，适合 Streamlit 生成式 DOM；`impeccable` 的 62 条规则面向手写前端，命中率低）。
-- **设计方向**：清晰 · 克制 · 可审计 + 记忆点：首屏最显眼的是 `awaiting_approval → completed` 的状态变化。
-- **设计 token**：本轮沿用 Streamlit 默认主题；若改版，限定 4–6 个中性灰阶 + 1 个强调色、1 套无衬线字体、4px 间距网格。
-- **页面 / 路由**：单页 Streamlit；侧栏 = 连接 / 运行 / 审批；主区 = `Insight`、`Listing`、`Compliance`、`Ads`、`Audit`、`Metrics` 六个 tab。
+- **UI 技能**：`unslop`（已安装到 `.claude/skills/unslop`，CC BY 4.0；中文改版见 `SPEC-004-ui-redesign.md`。选它是因为它能吃 URL / 截图，适合 Streamlit 生成式 DOM；`impeccable` 的 62 条规则面向手写前端，命中率低）。
+- **设计方向**：纸白 / 墨色 / 黄铜的运营台账；首屏最显眼的是人工闸门 `等待审批 → 已完成` 的状态变化（详见 `SPEC-004`）。
+- **设计 token**：见 `SPEC-004` 的颜色、字体、4px 网格与对比度约束。
+- **页面 / 路由**：单页 Streamlit；侧栏 = 连接 / 运行 / 审批闸门；主区 = 洞察、Listing、合规、广告、审计、指标六个 tab。
 - **主流程**：选 SKU → 选 mode → Run → 依次看洞察 / 草稿 / 合规 / 广告 → 侧栏 Approve 或 Reject → 看 Audit / Metrics。
 - **关键状态**：
   - 空：未运行时给出「选 SKU 并 Run」的说明与 5 步流程。

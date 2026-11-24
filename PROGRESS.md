@@ -8,18 +8,18 @@
 - 项目：Amazon 卖家多智能体运营副驾驶演示（LangGraph + RAG + FastAPI + Streamlit）
 - 当前状态：可跑；无 LLM key 时走规则兜底；真实 LLM 回归需显式 `--require-llm`
 - 启动：`.\run.ps1`（API :8000 + UI :8501）
-- 上次验证：`-m evals.run_eval` → 10/10（`llm_calls=0`）；`-m scripts.verify_llm_eval` → `LLM_EVAL_VERIFY_OK`；`-m scripts.smoke_test` → 5 条 dry-run；`scripts/verify_hitl_restart.py` → `HITL_RESTART_OK`（2026-11-24）
-- 最近决策：真实 LLM 回归显式开启 + 成本封顶（`ADR-003`）；HITL checkpoint 用官方 `SqliteSaver`（`ADR-002`）；演示边界见 `ADR-001`
-- 下一步：配置 key 后跑 T-003 的 AC-2/3/4/8；checkpoint GC 待决策
+- 上次验证：`-m evals.run_eval` → 10/10（`llm_calls=0`）；`-m scripts.verify_llm_eval` → `LLM_EVAL_VERIFY_OK`；`-m scripts.smoke_test` → 5 条 dry-run；`scripts/verify_hitl_restart.py` → `HITL_RESTART_OK`；`-m scripts.verify_ui` → `UI_VERIFY_OK`（2026-11-24）
+- 最近决策：中文 UI + 纸白/墨色/黄铜改版（`SPEC-004`）；真实 LLM 回归显式开启 + 成本封顶（`ADR-003`）；HITL checkpoint 用官方 `SqliteSaver`（`ADR-002`）；演示边界见 `ADR-001`
+- 下一步：T-004 独立裁判与提交；配置 key 后跑 T-003 的 AC-2/3/4/8；checkpoint GC 待决策
 - 未决问题：`.env` 是否启用 LLM / embedding（未读取，避免接触密钥）
 
 ## 当前迭代
-T-003 实现完成；真实 LLM 回归入口 / 成本闸门 / 报告已落地，AC-2/3/4/8 等 key 验证。
+T-004 中文 UI 改版实现完成；AppTest / 四视口 / 键盘 / 对比度验证通过，待独立裁判与提交。
 
 ## 进行中
 | ID | 任务 | 开始时间 |
 |---|---|---|
-| - | - | - |
+| T-004 | UI 中文改版（unslop） | 2026-11-24 |
 
 ## 待办（按依赖排序）
 | ID | 任务 | 依赖 | 预估轮数 |
@@ -42,6 +42,6 @@ T-003 实现完成；真实 LLM 回归入口 / 成本闸门 / 报告已落地，
 | 是否需要多 worker（改用 Postgres checkpoint） | 用户 | 部署形态 |
 
 ## 交接
-- 上次停在哪：T-003 实现完成并验证可离线验证的部分；真实 LLM 调用等 key。
-- 下一步：用户在 `.env` 配置 `OPENAI_API_KEY` 后跑 `--require-llm --case G-001` 与全量；或按待决策项做 checkpoint GC / 多 worker。
+- 上次停在哪：T-004 中文 UI 改版实现完成，验证与截图已齐；待独立裁判与提交。
+- 下一步：裁判 T-004 AC-1..AC-7 后提交；用户在 `.env` 配置 `OPENAI_API_KEY` 后跑 `--require-llm --case G-001` 与全量；或按待决策项做 checkpoint GC / 多 worker。
 - 不要重复的尝试 / 已否决的方案：不接真实 SP-API / Ads API；不绕过审批；不把 demo 包装成生产系统；不自写 checkpoint saver。

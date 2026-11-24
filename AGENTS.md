@@ -7,7 +7,7 @@ Amazon 卖家多智能体运营副驾驶演示：洞察 → Listing → 合规 �
 
 ## 技术栈
 - 语言/运行时：Python 3.11.8 | 框架：FastAPI + LangGraph + Streamlit | 包管理器：pip | 存储：SQLite + 本地 Chroma
-- UI 技能：`unslop`（只此一个，见 SPEC.md；本轮未安装）
+- UI 技能：`unslop`（只此一个，见 SPEC.md；已安装到 `.claude/skills/unslop`，CC BY 4.0）
 
 ## 命令
 | 用途 | 命令 |

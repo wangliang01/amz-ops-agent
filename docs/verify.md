@@ -90,20 +90,22 @@ curl.exe -s -X POST http://127.0.0.1:8000/runs/<run_id>/approve -H "Content-Type
 
 打开 <http://localhost:8501>：
 
-1. 侧栏选 `SKU-003` + `full_chain`，点 **Run pipeline**。
-2. 期望：状态 `awaiting_approval`；主区出现 `Insight` / `Listing` / `Compliance` / `Ads` / `Audit` / `Metrics` 六个 tab。
-3. 侧栏点 **Approve**。期望：状态 `completed`；`Audit` 出现 5 条 dry-run 记录；`Metrics` 显示 `llm_calls: 0`（无 LLM 时）。
-4. 停掉 API 再刷新。期望：侧栏 `API not reachable` + 启动命令，不白屏。
+1. 侧栏选 `SKU-003` + `full_chain`，点 **运行流水线**。
+2. 期望：状态 `等待审批`；主区出现 洞察 / Listing / 合规 / 广告 / 审计 / 指标 六个 tab。
+3. 侧栏点 **批准并执行 dry-run**。期望：状态 `已完成`；`审计` 出现 5 条 dry-run 记录；`指标` 显示 `模型调用: 0`（无 LLM 时）。
+4. 停掉 API 再刷新。期望：侧栏 `API 不可达` + 启动命令，不白屏。
 
-UI 逻辑可用 `streamlit.testing.v1.AppTest` 复现。2026-11-24 实测输出：
+UI 逻辑可用 `streamlit.testing.v1.AppTest` 复现：
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.verify_ui
+# 期望：UI_VERIFY_OK tabs=6 awaiting_approval=ok approve=5_dry_run reject=1_skip errors=0
+```
+
+2026-11-24 实测输出：
 
 ```
-title: ['amz-ops-agent']
-tabs: ['Insight', 'Listing', 'Compliance', 'Ads', 'Audit', 'Metrics']
-after run: awaiting_approval ['executor']
-after approve: completed exec_actions: 5
-compliance: True 100
-errors: []
+UI_VERIFY_OK tabs=6 awaiting_approval=ok approve=5_dry_run reject=1_skip errors=0
 ```
 
 ### 3.3 HITL 重启持久化
@@ -179,14 +181,24 @@ $env:LLM_ENABLED="false"; .\.venv\Scripts\python.exe -m evals.run_eval --require
 
 ## 4. UI 验收（有界面时必填）
 
-本轮（文档回填）**没有 UI 改动**，因此未做 4 视口截图。任何 UI 改动必须补齐：
+T-004 已完成中文 UI 改版（`SPEC-004-ui-redesign.md`）。UI 逻辑用 AppTest 验证：
 
-- 视口：1440 / 1024 / 768 / 390，截图存 `.scratch/ui/<ticket>/`
-- 必须为 0：横向滚动、控制台报错、破图 / 空图、正文对比度 < 4.5:1
-- 三种状态各一张截图：空 / 加载 / 错误
-- 键盘：Tab 可达所有可操作元素，focus 可见
-- 动效：`prefers-reduced-motion` 下不丢信息
-- 只调用 `AGENTS.md` 声明的 `unslop`。当前未安装：先运行 `/agent-harness:extras --declared`，不要临时换另一个 UI 技能。
+```powershell
+# 需先启动 API（:8000）
+.\.venv\Scripts\python.exe -m scripts.verify_ui
+# 期望：UI_VERIFY_OK tabs=6 awaiting_approval=ok approve=5_dry_run reject=1_skip errors=0
+```
+
+浏览器验收（2026-11-24，`ego-browser`）：
+
+- 截图：`.scratch/ui/T-004/`；1440 下 `empty-1440.png` / `awaiting-1440.png` / `completed-1440.png` / `error-1440.png`，以及 `empty|completed-{1024,768,390}.png` 和六个 tab 截图。`.scratch/ui/` 已 gitignore。
+- 视口：1440 / 1024 / 768 / 390 实测 `innerWidth == docScrollWidth == bodyScrollWidth`，无越界元素；768 / 390 侧栏折叠为抽屉。
+- 控制台：CDP `Runtime` / `Log` 事件为 0 条报错；无破图。
+- 对比度：墨色 15.31:1、次级 6.49:1、弱化 4.65:1（纸白）/ 5.02:1（表面）、黄铜 4.54:1、奶油/黄铜 4.75:1；正文均 ≥ 4.5:1。
+- 键盘：Tab 可达 skip link、侧栏折叠、展开器、SKU / 模式、运行、六个 tab；focus 为 `solid 2px #9C631C`。
+- 动效：`prefers-reduced-motion: reduce` 下 `transition-duration` / `animation-duration` 均为 `0s`，信息不依赖动画。
+- 只使用 `AGENTS.md` 声明的 `unslop`（已安装到 `.claude/skills/unslop`，CC BY 4.0，署名保留在 `SKILL.md`）。
+- 注：Streamlit 固定侧栏在 full-page 截图中会错位，因此状态截图用视口截图；页面级横向滚动仍按 `scrollWidth` 实测为 0。
 
 ## 5. 结论
 
