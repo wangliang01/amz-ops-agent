@@ -163,8 +163,10 @@ def build_report(
     }
 
 
-def _make_runner(graph: Any) -> Runner:
+def _make_runner(graph: Any, delay_sec: float = 0) -> Runner:
     def runner(case: dict[str, Any]) -> dict[str, Any]:
+        if delay_sec > 0:
+            time.sleep(delay_sec)
         started = time.perf_counter()
         run_id = f"eval-{uuid.uuid4().hex[:6]}"
         config = {"configurable": {"thread_id": run_id}}
@@ -246,7 +248,7 @@ def main(argv: list[str] | None = None) -> int:
     graph = build_graph(services)
     results, _total_cost, aborted = run_cases(
         cases,
-        _make_runner(graph),
+        _make_runner(graph, settings.llm_case_delay_sec),
         require_llm=args.require_llm,
         max_cost_usd=args.max_cost_usd,
         expected_calls=EXPECTED_LLM_CALLS.get("listing_only", 0),

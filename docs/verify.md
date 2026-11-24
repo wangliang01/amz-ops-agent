@@ -31,7 +31,7 @@ G-010    SKU-005  PASS    -
 10/10 passed (100.0%); llm_calls=0, tokens=0, cost=$0.000000. Report: ...\evals\report.json
 ```
 
-无 key 时这是**兜底回归**（`llm_calls=0`），不能证明真实 LLM 路径；真实调用见 §3.4。有 key 且未加 `--require-llm` 时，默认评测会实际调用 LLM，报告落到 `evals/llm_report.json`；无 key 时落 `evals/report.json`。
+无 key 时这是**兜底回归**（`llm_calls=0`），不能证明真实 LLM 路径；真实调用见 §3.4。有 key 且未加 `--require-llm` 时，默认评测会实际调用 LLM，报告落到 `evals/llm_report.json`，模型非确定性失败会以退出 1 呈现；无 key 时落 `evals/report.json`。要稳定复验兜底路径，请显式设置 `LLM_ENABLED=false; EMBEDDING_ENABLED=false`。
 
 `scripts.smoke_test` 期望（2026-11-23 实测，节选）：
 
@@ -133,9 +133,19 @@ UI_VERIFY_OK tabs=6 awaiting_approval=ok approve=5_dry_run reject=1_skip errors=
 ```dotenv
 LLM_ENABLED=true
 OPENAI_API_KEY=...
+OPENAI_BASE_URL=https://apihub.agnes-ai.com/v1
+CHAT_MODEL=agnes-3.0-flash
+CHEAP_MODEL=agnes-3.0-flash
 # 端点不支持 embeddings 时：
 EMBEDDING_ENABLED=false
+# provider 刊例价（USD / 1M token），影响 --max-cost-usd 估算：
+MODEL_PRICE_INPUT=0.05
+MODEL_PRICE_OUTPUT=0.15
+# 免费 provider 容易触发 RPM 限流；case 间隔按需设置：
+LLM_CASE_DELAY_SEC=40
 ```
+
+任何 OpenAI 兼容端点均可；把 Base URL、模型名、价格与限流间隔替换为 provider 对应值。不要把真实 key 提交或贴到聊天里。
 
 2. 单 case 连通性（几分钱）：
 
@@ -151,7 +161,7 @@ EMBEDDING_ENABLED=false
 .\.venv\Scripts\python.exe -m evals.run_eval --require-llm --max-cost-usd 0.50
 ```
 
-期望：退出码 0（全过）或 1（有结构性失败，`failures` 列原因）。真实模型输出非确定，失败是回归证据，不要为了全绿去改 prompt。
+期望：退出码 0（全过）或 1（有结构性失败，`failures` 列原因）。真实模型输出非确定，失败是回归证据，不要为了全绿去改 prompt。免费 / 低 RPM 端点如出现 429，优先增大 `LLM_CASE_DELAY_SEC` 或升级 provider 套餐；不会通过放宽 AC 来“过测”。
 
 4. 无 key 时 `--require-llm` 必须失败：
 

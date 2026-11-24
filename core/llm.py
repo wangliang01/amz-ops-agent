@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import re
 from dataclasses import dataclass
 from typing import Any, Type
@@ -11,6 +12,7 @@ from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, ValidationError
 
 from core.config import Settings, settings as default_settings
+from core.llm_retry import invoke_with_retry
 
 logger = logging.getLogger(__name__)
 
@@ -47,11 +49,16 @@ MODEL_PRICES = {
     "gpt-4o": (2.50, 10.00),
     "deepseek-chat": (0.14, 0.28),
     "qwen-plus": (0.40, 1.20),
+    "agnes-2.5-flash": (0.05, 0.15),
+    "agnes-3.0-flash": (0.05, 0.15),
 }
 
 
 def estimate_cost(usage: Usage, model: str) -> float:
-    inp, out = MODEL_PRICES.get(model, (0.50, 1.50))
+    # USD per 1M tokens. Explicit provider pricing wins over the model table.
+    default_inp, default_out = MODEL_PRICES.get(model, (0.50, 1.50))
+    inp = float(os.getenv("MODEL_PRICE_INPUT", default_inp))
+    out = float(os.getenv("MODEL_PRICE_OUTPUT", default_out))
     return (usage.prompt_tokens / 1_000_000) * inp + (usage.completion_tokens / 1_000_000) * out
 
 
@@ -125,10 +132,18 @@ class LLMClient:
             return fallback or {}, Usage()
 
         messages = [SystemMessage(content=system), HumanMessage(content=user)]
+        strict_suffix = (
+            "\n\nReturn ONLY a valid JSON object. "
+            "No markdown fences, no commentary, no trailing commas."
+        )
         last_error: Exception | None = None
         for _attempt in range(2):
             try:
-                msg = self._get_model(model).invoke(messages)
+                augmented_messages = [
+                    SystemMessage(content=system + strict_suffix),
+                    *messages[1:],
+                ]
+                msg = invoke_with_retry(self._get_model(model), augmented_messages)
                 data = _parse_json(str(msg.content))
                 if schema is not None:
                     data = schema.model_validate(data).model_dump()
@@ -136,12 +151,14 @@ class LLMClient:
             except (ValidationError, ValueError, json.JSONDecodeError) as exc:
                 last_error = exc
                 messages = [
-                    SystemMessage(
-                        content=system
-                        + "\n\nReturn ONLY a valid JSON object. "
-                        "No markdown fences, no commentary."
+                    SystemMessage(content=system),
+                    HumanMessage(
+                        content=user
+                        + "\n\nThe previous output was not valid JSON. "
+                        "Return ONLY one valid JSON object, with all strings and keys "
+                        "properly escaped. No markdown fences, no commentary, "
+                        "no trailing commas."
                     ),
-                    HumanMessage(content=user),
                 ]
             except Exception as exc:  # provider/network errors: use fallback immediately
                 last_error = exc

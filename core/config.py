@@ -50,6 +50,9 @@ class Settings:
 
     top_k: int = field(default_factory=lambda: int(os.getenv("TOP_K", "5")))
     max_tokens: int = field(default_factory=lambda: int(os.getenv("MAX_TOKENS", "1800")))
+    llm_case_delay_sec: float = field(
+        default_factory=lambda: float(os.getenv("LLM_CASE_DELAY_SEC", "0"))
+    )
     target_acos: float = field(default_factory=lambda: float(os.getenv("TARGET_ACOS", "0.30")))
     api_base_url: str = field(
         default_factory=lambda: os.getenv("API_BASE_URL", "http://localhost:8000").strip()
