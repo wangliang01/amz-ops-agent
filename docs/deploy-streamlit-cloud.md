@@ -16,7 +16,7 @@ Streamlit Community Cloud 免费、公开、无需绑定银行卡。它只运行
 - 构建日志（2026-11-24）：`Starting up repository: 'amz-ops-agent', branch: 'main', main module: 'app/streamlit_cloud.py'`；运行时 `LLM disabled`、`Embeddings disabled`。
 - 浏览器实测：运行流水线 → `等待审批`；批准 → `已完成`；审计 5 条 `dry-run 成功`；指标模型调用 0。
 - 2026-11-24 更新：线上已有「选品」tab、补货/预算/定价与 ROI；批准后仍为 5 条 dry-run。
-- **模块缓存**：push 新增或重命名 Python 模块后，线上可能只做热重载并保留旧模块缓存（表现为新页面引用旧类）。到 <https://share.streamlit.io/> 的 app 菜单点 **Reboot**，再在确认框点一次 **Reboot**；重启后才会加载完整新版本。
+- **模块缓存**：push 新增或重命名 Python 模块后，线上可能只做热重载并保留旧模块缓存（表现为新页面引用旧类）。到 <https://share.streamlit.io/> 的 app 菜单点 **Reboot**，再在确认框点一次 **Reboot**；重启后才会加载完整新版本。2026-11-24 T-010 与 T-011 各遇到一次（T-011 是前端已有「美工」tab、后端图尚未加载）。
 
 ## 第一次部署
 

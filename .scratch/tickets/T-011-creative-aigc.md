@@ -53,6 +53,7 @@
 - 浏览器实测（ego-browser，1440×1000）：美工 tab 显示 `审核分 100 通过 / 素材位 5 / 拦截 0 / 警告 0`；素材位表主图为「无文字（主图政策）」、场景图「无文字」、细节图 `Breathable tape`、套装图 `12 lifts per kit`、A+ `For neck and jaw`，状态均为 `mock 未渲染`；审核发现含「mock 提供方未渲染图片，像素级产品还原无法验证」；`innerWidth == scrollWidth == 1707`；批准后 `已完成`、审计 5 条 `dry-run 成功`。
 - 390×844 实测：`innerWidth == scrollWidth == bodyScrollWidth == 390`，无横向滚动。
 - 截图：`.scratch/ui/T-011/creative-1440.png`、`live-completed.png`、`creative-390.png`。
+- 线上 E2E（2026-11-24，Streamlit Cloud）：push 后前端已出现 8 个 tab，但后端仍是旧图（「美工」显示空状态，`state.creative_*` 缺失）；按 `docs/deploy-streamlit-cloud.md` 在 share.streamlit.io 执行 Reboot 后，运行 `full_chain` → 美工审核分 100、5 个素材位、`mock 未渲染`、像素级提示；批准 → `已完成`、审计 5 条 `dry-run 成功`。截图 `.scratch/ui/T-011/live-creative.png`、`live-completed.png`。
 - `compileall -q agent api app core rag evals scripts data` 退出 0；未新增依赖。
 - 提交：`3fe7699`。
 - 实际规模：新增 `agent/creative.py`（570 行，含注释与数据表）、`agent/nodes/creative.py`（47 行）、`scripts/verify_creative.py`（166 行）；总 diff 约 1,180 行，高于原估 < 650，原因是为 5 个素材位、5 个 rubric 维度与负向对照补齐了确定性逻辑与测试。
