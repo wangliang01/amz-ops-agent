@@ -10,6 +10,12 @@ Streamlit Community Cloud 免费、公开、无需绑定银行卡。它只运行
 
 审批闸门仍是 LangGraph 的 `interrupt_before=["executor"]`；批准后执行器只写 dry-run 审计，不接真实店铺写接口。
 
+## 在线实例
+
+- 公开地址：<https://amz-ops-agent-g9pckbqru2xenyystgiaas.streamlit.app/>
+- 构建日志（2026-11-24）：`Starting up repository: 'amz-ops-agent', branch: 'main', main module: 'app/streamlit_cloud.py'`；运行时 `LLM disabled`、`Embeddings disabled`。
+- 浏览器实测：运行流水线 → `等待审批`；批准 → `已完成`；审计 5 条 `dry-run 成功`；指标模型调用 0。
+
 ## 第一次部署
 
 1. 把 `main` 推到 GitHub（仓库公开即可）：

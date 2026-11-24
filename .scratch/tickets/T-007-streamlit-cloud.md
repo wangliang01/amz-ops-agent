@@ -1,6 +1,6 @@
 # [T-007] Streamlit Community Cloud 免费部署
 
-- **Status**: In Progress
+- **Status**: Done
 - **Depends On**: T-005, T-006
 - **对应 SPEC**: `SPEC.md` 的部署边界（不接真实店铺；演示数据）
 - **预估轮数**: 2
@@ -47,8 +47,13 @@ Render 免费 Web Service 在创建时仍要求绑定银行卡；Hugging Face �
   - `UI_APP=app/streamlit_cloud.py scripts.verify_ui` → 同上，退出 0（云端入口验证）。
   - `evals.run_eval`（`LLM_ENABLED=false`）→ 10/10 passed，`llm_calls=0`，退出 0。
   - `scripts.smoke_test` → 5 条 dry-run；`compileall` 退出 0。
-- 部署状态：Streamlit Community Cloud 账号已通过 Google 登录；应用创建待 `main` 推送后执行。实际公网 URL 待回填。
-- 未验证：Streamlit Cloud 实际构建/运行态；免费实例休眠与临时文件系统清空。
+- 提交：`f5fd95f`
+- 部署状态（2026-11-24）：**已上线**
+  - 公开地址：<https://amz-ops-agent-g9pckbqru2xenyystgiaas.streamlit.app/>
+  - 构建日志：`Starting up repository: 'amz-ops-agent', branch: 'main', main module: 'app/streamlit_cloud.py'`；`Uvicorn server started on :::8501`；运行时 `LLM disabled`、`Embeddings disabled`。
+  - 浏览器 E2E：运行流水线 → `等待审批`；批准 → `已完成` / `闸门 · 已批`；审计 tab 恰好 5 条 `dry-run 成功`；指标 `模型调用 0`。
+  - 免费实例限制：空闲休眠、临时文件系统（SQLite 重启后清空），已写入 `docs/deploy-streamlit-cloud.md`。
+- 未验证：长时间空闲后的冷启动耗时；并发访问下的配额表现。
 
 ## 裁判记录
 

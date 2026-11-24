@@ -58,6 +58,8 @@ docker compose up --build
 
 ### Streamlit Community Cloud（推荐，免费）
 
+在线 Demo：<https://amz-ops-agent-g9pckbqru2xenyystgiaas.streamlit.app/>
+
 无需绑卡、无需单独启动 FastAPI：
 
 - 入口文件：`app/streamlit_cloud.py`
