@@ -58,7 +58,7 @@ uv pip install --python .venv\Scripts\python.exe -r requirements.txt
 
 ## 完成记录
 
-- 提交：待提交
+- 提交：`0417240`
 - 证据（输出 / 截图 / 响应）：
   - 重启脚本：`HITL_RESTART_OK run-58e788c6 run-ac9280bf`；`checkpoints` 表存在，`checkpoint_db.stat().st_size > 0`。
   - 回归：`evals.run_eval` → `10/10 passed`；`scripts.smoke_test` → `execution_actions: 5`；AppTest → 6 tabs、`completed`、5 条动作；CLI → `Saved run ... (status=completed)`。
