@@ -16,6 +16,12 @@ ROOT_DIR = APP_DIR.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 MARK = APP_DIR / "assets" / "mark.png"
+BRAND_MARK = (
+    '<svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
+    '<path d="M4 22V4h16v18" fill="none" stroke="currentColor" stroke-width="2.4"/>'
+    '<circle cx="12" cy="13.5" r="2.2" fill="#9C631C"/>'
+    "</svg>"
+)
 
 st.set_page_config(
     page_title="amz-ops-agent · 运营副驾驶",
@@ -196,12 +202,10 @@ a:focus-visible {
 /* Brand */
 .side-brand { display: flex; align-items: center; gap: 10px; padding: 4px 0 2px; }
 .side-brand-name { font-size: 17px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
+.side-brand .brand-mark { width: 18px; height: 18px; flex-basis: 18px; }
 .brand-mark {
-  width: 18px; height: 18px; border: 1.5px solid var(--ink);
-  position: relative; display: inline-block; flex: 0 0 18px;
-}
-.brand-mark::after {
-  content: ""; position: absolute; inset: 4px; background: var(--brass);
+  width: 20px; height: 20px; display: block; flex: 0 0 20px;
+  color: var(--ink);
 }
 .side-note { color: var(--muted); font-size: 12px; margin: 2px 0 14px; }
 .side-rule { height: 1px; background: var(--line); margin: 0 0 14px; }
@@ -809,11 +813,11 @@ def render_bars(
 
 def render_header() -> None:
     st.markdown(
-        """
+        f"""
         <div class="app-head">
           <div>
             <div class="brand-row">
-              <span class="brand-mark" aria-hidden="true"></span>
+              {BRAND_MARK}
               <span class="brand-name">amz-ops-agent</span>
             </div>
             <p class="lede">把评论痛点变成合规的 Listing 草稿和广告出价方案。人工闸门之前，不执行任何动作。</p>
@@ -897,7 +901,7 @@ def render_gate_panel(snapshot: dict[str, Any] | None, metrics: dict[str, Any]) 
 def render_sidebar(snapshot: dict[str, Any] | None, metrics: dict[str, Any]) -> None:
     with st.sidebar:
         st.markdown(
-            '<div class="side-brand"><span class="brand-mark" aria-hidden="true"></span>'
+            f'<div class="side-brand">{BRAND_MARK}'
             '<span class="side-brand-name">amz-ops-agent</span></div>',
             unsafe_allow_html=True,
         )
