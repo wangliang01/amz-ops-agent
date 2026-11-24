@@ -49,4 +49,4 @@
 - 浏览器实测（ego-browser）：7 个 tab；机会排名 5 行、权重说明、SKU-001 证据展开；补货画面 `95 件 / 72.6 天 / 补货点 58 / 建议补 50 / 日预算 $48.7→$34.1`；ROI `60 分钟 / $30 / $0 / ACOS -14.3% / 修复 2`；`innerWidth == scrollWidth`（1707/1707），无横向滚动。
 - 截图：`.scratch/ui/T-010/opportunity-1440.png`、`ops-band-1440.png`、`roi-1440.png`、`metrics-1440.png`。
 - `compileall -q agent api app core rag evals scripts data` 退出 0；未新增依赖。
-- 提交：见 `PROGRESS.md`。
+- 提交：`a4f26b2`。
