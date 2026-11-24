@@ -56,7 +56,17 @@ docker compose up --build
 
 > 本机 Docker daemon 未启动，镜像构建未验证；`docker compose config` 已通过。
 
-### Render（可选）
+### Streamlit Community Cloud（推荐，免费）
+
+无需绑卡、无需单独启动 FastAPI：
+
+- 入口文件：`app/streamlit_cloud.py`
+- 单进程后端：`app/local_backend.py`（复用现有 LangGraph、审批闸门和 SQLite）
+- 部署步骤与可选 LLM secrets 见 [`docs/deploy-streamlit-cloud.md`](docs/deploy-streamlit-cloud.md)
+
+在 <https://share.streamlit.io/> 创建 app，仓库选 `wangliang01/amz-ops-agent`，分支 `main`，主文件路径填 `app/streamlit_cloud.py`。不填 key 时走规则兜底；填 key 才调用真实 LLM。
+
+### Render（备选）
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/wangliang01/amz-ops-agent)
 

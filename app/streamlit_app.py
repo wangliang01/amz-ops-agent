@@ -3,6 +3,7 @@ from __future__ import annotations
 import html
 import os
 import re
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
@@ -11,6 +12,9 @@ import requests
 import streamlit as st
 
 APP_DIR = Path(__file__).resolve().parent
+ROOT_DIR = APP_DIR.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 MARK = APP_DIR / "assets" / "mark.png"
 
 st.set_page_config(
@@ -600,8 +604,20 @@ def api_base() -> str:
     ).rstrip("/")
 
 
+def is_local() -> bool:
+    return api_base().lower() == "local"
+
+
+def _local_backend():
+    from app.local_backend import backend
+
+    return backend
+
+
 def load_skus(base: str) -> tuple[list[dict[str, Any]], str | None]:
     try:
+        if base.lower() == "local":
+            return _local_backend().list_skus(), None
         res = requests.get(f"{base}/skus", timeout=10)
         res.raise_for_status()
         return res.json(), None
@@ -610,12 +626,27 @@ def load_skus(base: str) -> tuple[list[dict[str, Any]], str | None]:
 
 
 def post(path: str, payload: dict[str, Any], timeout: int = 300) -> dict[str, Any]:
+    if is_local():
+        backend = _local_backend()
+        if path == "/runs":
+            return backend.create_run(payload)
+        if path.startswith("/runs/") and path.endswith("/approve"):
+            run_id = path[len("/runs/") : -len("/approve")]
+            return backend.approve(run_id, payload)
+        raise ValueError(f"unsupported local POST path: {path}")
     res = requests.post(f"{api_base()}{path}", json=payload, timeout=timeout)
     res.raise_for_status()
     return res.json()
 
 
 def get(path: str, timeout: int = 30) -> dict[str, Any]:
+    if is_local():
+        backend = _local_backend()
+        if path == "/metrics":
+            return backend.metrics()
+        if path.startswith("/runs/"):
+            return backend.get_run(path[len("/runs/") :])
+        raise ValueError(f"unsupported local GET path: {path}")
     res = requests.get(f"{api_base()}{path}", timeout=timeout)
     res.raise_for_status()
     return res.json()
@@ -797,7 +828,7 @@ def render_header() -> None:
 def render_error_card(title: str, detail: str) -> None:
     st.markdown(
         f'<div class="error-card"><div class="error-title">{e(title)}</div>'
-        "<p>请检查 API 连接后重试。</p></div>",
+        "<p>请稍后重试；本地模式可展开下方错误详情。</p></div>",
         unsafe_allow_html=True,
     )
     with st.expander("错误详情"):
@@ -873,28 +904,38 @@ def render_sidebar(snapshot: dict[str, Any] | None, metrics: dict[str, Any]) -> 
         st.markdown('<div class="side-note">运营副驾驶 · 合成数据</div>', unsafe_allow_html=True)
         st.markdown('<div class="side-rule"></div>', unsafe_allow_html=True)
 
-        with st.expander("API 连接", expanded=bool(st.session_state.get("api_error"))):
-            base_input = st.text_input(
-                "API 地址",
-                value=st.session_state.get(
-                    "api_base", os.getenv("API_BASE_URL", "http://localhost:8000")
-                ),
-            )
-            st.session_state["api_base"] = base_input.rstrip("/")
-            st.caption("默认 http://localhost:8000")
+        if is_local():
+            st.caption("单进程演示模式：后端在应用内运行。")
+        else:
+            with st.expander("API 连接", expanded=bool(st.session_state.get("api_error"))):
+                base_input = st.text_input(
+                    "API 地址",
+                    value=st.session_state.get(
+                        "api_base", os.getenv("API_BASE_URL", "http://localhost:8000")
+                    ),
+                )
+                st.session_state["api_base"] = base_input.rstrip("/")
+                st.caption("默认 http://localhost:8000")
 
         skus, error = load_skus(api_base())
         st.session_state["api_error"] = bool(error)
 
         st.markdown('<div class="side-section-label">运行</div>', unsafe_allow_html=True)
         if error:
-            st.markdown(
-                '<div class="error-card"><div class="error-title">API 不可达</div>'
-                f"<p>无法连接 {e(api_base())}。</p>"
-                '<p class="error-hint">先在终端启动 API：</p>'
-                "<code>uvicorn api.main:app --reload</code></div>",
-                unsafe_allow_html=True,
-            )
+            if is_local():
+                st.markdown(
+                    '<div class="error-card"><div class="error-title">本地后端不可用</div>'
+                    "<p>初始化失败，请展开错误详情。</p></div>",
+                    unsafe_allow_html=True,
+                )
+            else:
+                st.markdown(
+                    '<div class="error-card"><div class="error-title">API 不可达</div>'
+                    f"<p>无法连接 {e(api_base())}。</p>"
+                    '<p class="error-hint">先在终端启动 API：</p>'
+                    "<code>uvicorn api.main:app --reload</code></div>",
+                    unsafe_allow_html=True,
+                )
             with st.expander("错误详情"):
                 st.caption(str(error))
             sku_id = "SKU-003"

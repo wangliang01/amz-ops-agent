@@ -7,7 +7,12 @@ from pathlib import Path
 import requests
 from streamlit.testing.v1 import AppTest
 
-APP = Path(__file__).resolve().parents[1] / "app" / "streamlit_app.py"
+APP = Path(
+    os.getenv(
+        "UI_APP",
+        str(Path(__file__).resolve().parents[1] / "app" / "streamlit_app.py"),
+    )
+)
 EXPECTED_TABS = ["洞察", "Listing", "合规", "广告", "审计", "指标"]
 EXPECTED_ACTIONS = 5
 
@@ -25,11 +30,12 @@ def button(at: AppTest, label: str):
 
 def main() -> int:
     base = os.getenv("API_BASE_URL", "http://localhost:8000").rstrip("/")
-    try:
-        requests.get(f"{base}/skus", timeout=5).raise_for_status()
-    except Exception as exc:
-        print(f"UI_VERIFY_FAILED: API not reachable at {base}: {exc}")
-        return 1
+    if base.lower() != "local":
+        try:
+            requests.get(f"{base}/skus", timeout=5).raise_for_status()
+        except Exception as exc:
+            print(f"UI_VERIFY_FAILED: API not reachable at {base}: {exc}")
+            return 1
 
     at = AppTest.from_file(str(APP), default_timeout=180)
     at.run()

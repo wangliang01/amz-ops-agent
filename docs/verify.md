@@ -20,6 +20,13 @@
 $env:LLM_ENABLED="false"; $env:EMBEDDING_ENABLED="false"
 .\.venv\Scripts\python.exe -m evals.run_eval
 .\.venv\Scripts\python.exe -m scripts.smoke_test
+.\.venv\Scripts\python.exe -m scripts.verify_local_backend
+```
+
+`scripts.verify_local_backend` 使用临时 `runs.sqlite` / `checkpoints.sqlite`，验证 Streamlit 云端单进程后端的完整闸门：
+
+```text
+LOCAL_BACKEND_OK skus=5 awaiting_approval=ok approve=5_dry_run audit=6
 ```
 
 `evals.run_eval` 期望（2026-11-23 实测）：
@@ -101,6 +108,17 @@ UI 逻辑可用 `streamlit.testing.v1.AppTest` 复现：
 .\.venv\Scripts\python.exe -m scripts.verify_ui
 # 期望：UI_VERIFY_OK tabs=6 awaiting_approval=ok approve=5_dry_run reject=1_skip errors=0
 ```
+
+Streamlit Cloud 单进程模式（不需要先启动 API）：
+
+```powershell
+$env:API_BASE_URL="local"
+$env:LLM_ENABLED="false"; $env:EMBEDDING_ENABLED="false"
+.\.venv\Scripts\python.exe -m scripts.verify_ui
+# 云端入口本身：
+$env:UI_APP=(Resolve-Path 'app\streamlit_cloud.py').Path
+.\.venv\Scripts\python.exe -m scripts.verify_ui
+# 期望：两者均为 UI_VERIFY_OK ...
 
 2026-11-24 实测输出：
 

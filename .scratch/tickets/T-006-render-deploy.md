@@ -36,7 +36,7 @@
 
 ## 完成记录
 
-- 提交：`49fbc32`
+- 提交：`f88ac44`
 - 证据（2026-11-24 实测）：
   - `yaml.safe_load`：服务 `['amz-ops-api','amz-ops-web']`；`runtime=python`、`plan=free`、`autoDeployTrigger="off"`；API `/health`、Web `/_stcore/health`。
   - 启动：两个服务均绑定 Render `$PORT`；API `uvicorn api.main:app`，Web `streamlit run app/streamlit_app.py`。
