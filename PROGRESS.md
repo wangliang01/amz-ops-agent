@@ -50,6 +50,6 @@ T-010 已完成：选品机会排名、补货/预算/定价计划、ROI 面板�
 | 是否需要多 worker（改用 Postgres checkpoint） | 用户 | 部署形态 |
 
 ## 交接
-- 上次停在哪：T-010（`a4f26b2`）已完成；链路增加选品机会、补货/预算/定价与 ROI，审批闸门与 5 条 dry-run 未变；真实 LLM 回归仍为 9/10（`G-003` 原样记录）。
+- 上次停在哪：T-010（`a4f26b2`）已完成；链路增加选品机会、补货/预算/定价与 ROI，审批闸门与 5 条 dry-run 未变；线上在 Reboot 后验证通过；真实 LLM 回归仍为 9/10（`G-003` 原样记录）。
 - 下一步：T-011 美工 AIGC brief + 审核 rubric + 可插拔接口；再做 T-012 adapter mock。
 - 不要重复的尝试 / 已否决的方案：不接真实 SP-API / Ads API；不绕过审批；不把 demo 包装成生产系统；不自写 checkpoint saver；不为通过测试放宽 golden 判定；不在 Render / Hugging Face 上继续尝试需要绑卡或付费的方案。

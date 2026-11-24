@@ -48,5 +48,6 @@
 - API 实测（uvicorn :8010）：`GET /opportunities` 返回 5 条，排名 `SKU-001 67.5 / SKU-005 66.8 / SKU-002 64.6 / SKU-003 60.6 / SKU-004 58.5`；`POST /runs` 返回 `awaiting_approval`、`next=["executor"]`，`state.ops_plan` 含 `inventory` / `budget` / `price_guardrail` / `roi` / `assumptions`。
 - 浏览器实测（ego-browser）：7 个 tab；机会排名 5 行、权重说明、SKU-001 证据展开；补货画面 `95 件 / 72.6 天 / 补货点 58 / 建议补 50 / 日预算 $48.7→$34.1`；ROI `60 分钟 / $30 / $0 / ACOS -14.3% / 修复 2`；`innerWidth == scrollWidth`（1707/1707），无横向滚动。
 - 截图：`.scratch/ui/T-010/opportunity-1440.png`、`ops-band-1440.png`、`roi-1440.png`、`metrics-1440.png`。
+- 线上 E2E（2026-11-24，Streamlit Cloud）：push 后首次访问仍命中旧进程的模块缓存（`SeedStore` 缺 `historical_listings`）；在 share.streamlit.io 的 app 菜单执行 **Reboot** 并在确认框再次点 Reboot 后，线上恢复：7 个 tab、选品 5 行、`SKU-001` 与模拟说明、补货/预算 band 全部出现；批准后状态 `已完成`，审计 5 条 `dry-run 成功`。截图 `.scratch/ui/T-010/live-opportunity.png`、`live-completed.png`。
 - `compileall -q agent api app core rag evals scripts data` 退出 0；未新增依赖。
 - 提交：`a4f26b2`。
