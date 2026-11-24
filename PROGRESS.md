@@ -14,7 +14,7 @@
 - 未决问题：`.env` 是否长期保留 Agnes AI 配置（未提交，避免接触密钥）；Agnes 免费 key 的 RPM 限制需要更高配额时可升级 Token Plan；带 key 时默认 eval 会真实调用 LLM，兜底回归须显式 `LLM_ENABLED=false`
 
 ## 当前迭代
-T-006 Render + GitHub Actions 部署配置已通过独立裁判，待提交并推送；实际公网服务需用户在 Render 授权创建。
+T-006 Render + GitHub Actions 部署配置已通过独立裁判并提交；实际公网服务需用户在 Render 授权创建。
 
 ## 进行中
 | ID | 任务 | 开始时间 |
@@ -35,7 +35,7 @@ T-006 Render + GitHub Actions 部署配置已通过独立裁判，待提交并�
 | T-003 | 真实 LLM 回归入口 / 成本闸门 / 报告 | `517ad68` | `verify_llm_eval` 全 PASS；fallback eval 10/10；无 key 退出 2；AC-2/3/4/8 待 key |
 | T-004 | UI 中文改版（unslop） | `dc8ea44` | AppTest / eval / smoke / 四视口 / 对比度 / 键盘均通过；独立裁判 AC-1..AC-7 全 PASS |
 | T-005 | 真实 LLM 回归收尾（Agnes AI） | `0a6a598` | 真实 `--require-llm` 10/10；`verify_llm_eval` / fallback 10/10 / smoke / UI 全通过；独立裁判复判全 AC 达成 |
-| T-006 | Render + GitHub Actions 部署配置 | 待回填 | YAML/端口/健康检查/密钥扫描通过；Actions 缺失 hooks 时 warning 跳过；独立裁判 AC-1..AC-8 全达成；运行态待 Render 授权验证 |
+| T-006 | Render + GitHub Actions 部署配置 | `49fbc32` | YAML/端口/健康检查/密钥扫描通过；Actions 缺失 hooks 时 warning 跳过；独立裁判 AC-1..AC-8 全达成；运行态待 Render 授权验证 |
 
 ## 阻塞 / 待决策
 | 问题 | 需要谁决定 | 影响范围 |
@@ -45,6 +45,6 @@ T-006 Render + GitHub Actions 部署配置已通过独立裁判，待提交并�
 | 是否需要多 worker（改用 Postgres checkpoint） | 用户 | 部署形态 |
 
 ## 交接
-- 上次停在哪：T-005 已通过独立裁判并提交（`0a6a598`）；T-006 Render + Actions 配置已通过复判，待提交推送。
-- 下一步：提交并推送 T-006；用户在 Render 点击 Deploy to Render 创建两个服务，配置 `RENDER_API_DEPLOY_HOOK` / `RENDER_WEB_DEPLOY_HOOK` secrets 后由 Actions 部署。checkpoint GC / 多 worker 属后续部署决策；`main` 已合并 T-004 / T-005。
+- 上次停在哪：T-005 已提交（`0a6a598`）；T-006 Render + Actions 配置已提交（`49fbc32`），待推送与 Render 授权创建。
+- 下一步：推送 `main`；用户在 Render 点击 Deploy to Render 创建两个服务，配置 `RENDER_API_DEPLOY_HOOK` / `RENDER_WEB_DEPLOY_HOOK` secrets 后由 Actions 部署。checkpoint GC / 多 worker 属后续部署决策；`main` 已合并 T-004 / T-005。
 - 不要重复的尝试 / 已否决的方案：不接真实 SP-API / Ads API；不绕过审批；不把 demo 包装成生产系统；不自写 checkpoint saver；不为通过测试放宽 golden 判定。

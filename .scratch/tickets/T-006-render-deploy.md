@@ -36,7 +36,7 @@
 
 ## 完成记录
 
-- 提交：待提交
+- 提交：`49fbc32`
 - 证据（2026-11-24 实测）：
   - `yaml.safe_load`：服务 `['amz-ops-api','amz-ops-web']`；`autoDeployTrigger` 为字符串 `"off"`；API `/health`、Web `/_stcore/health`。
   - 端口：API `PORT=8000` 对齐 Dockerfile CMD；Web `PORT=8501` 对齐 `dockerCommand`。
