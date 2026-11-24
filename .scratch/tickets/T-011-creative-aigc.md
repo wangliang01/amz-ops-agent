@@ -54,5 +54,5 @@
 - 390×844 实测：`innerWidth == scrollWidth == bodyScrollWidth == 390`，无横向滚动。
 - 截图：`.scratch/ui/T-011/creative-1440.png`、`live-completed.png`、`creative-390.png`。
 - `compileall -q agent api app core rag evals scripts data` 退出 0；未新增依赖。
-- 提交：待填。
+- 提交：`3fe7699`。
 - 实际规模：新增 `agent/creative.py`（570 行，含注释与数据表）、`agent/nodes/creative.py`（47 行）、`scripts/verify_creative.py`（166 行）；总 diff 约 1,180 行，高于原估 < 650，原因是为 5 个素材位、5 个 rubric 维度与负向对照补齐了确定性逻辑与测试。

@@ -40,7 +40,7 @@ T-011 已完成：美工 5 素材位 brief、确定性 rubric、可插拔创意 
 | T-008 | 品牌 mark 改为审批闸门 glyph | `98fb544` | 页头 20px / 侧栏 18px；1440/390 无横向滚动；两入口 `UI_VERIFY_OK`；`compileall` 通过 |
 | T-009 | 真实公开数据替换合成种子 | `acd1806` | 5 SKU / 250 条真实评论 / 20 条真实历史 Listing；fallback eval 10/10；真实 LLM 9/10；smoke / local backend / UI / compileall 通过 |
 | T-010 | 运营广度 P0：选品 / 补货 / 预算定价 / ROI | `a4f26b2` | `OPS_VERIFY_OK`；API `/opportunities` + `state.ops_plan`；UI tabs=7 与 ROI 浏览器实测；5 条 dry-run 不变 |
-| T-011 | 美工 AIGC：brief / rubric / 可插拔 provider | 待填 | `CREATIVE_VERIFY_OK`；UI tabs=8；负向对照 `Best Seller` 被 block；5 条 dry-run 不变 |
+| T-011 | 美工 AIGC：brief / rubric / 可插拔 provider | `3fe7699` | `CREATIVE_VERIFY_OK`；UI tabs=8；负向对照 `Best Seller` 被 block；5 条 dry-run 不变 |
 
 ## 阻塞 / 待决策
 | 问题 | 需要谁决定 | 影响范围 |
