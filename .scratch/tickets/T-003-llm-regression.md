@@ -60,7 +60,7 @@
 
 ## 完成记录
 
-- 提交：待提交
+- 提交：`517ad68`
 - 证据（2026-11-24 实测）：
   - `-m scripts.verify_llm_eval` → 8 项全 PASS，`LLM_EVAL_VERIFY_OK`。
   - `-m evals.run_eval` → `10/10 passed (100.0%); llm_calls=0, tokens=0, cost=$0.000000`；报告键含 `mode=fallback`、`aborted=null`。
