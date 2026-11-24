@@ -8,6 +8,7 @@ from langgraph.graph import END, START, StateGraph
 
 from agent.nodes.ads import make_ads_node
 from agent.nodes.compliance import make_compliance_node
+from agent.nodes.creative import make_creative_node
 from agent.nodes.executor import make_executor_node
 from agent.nodes.insight import make_insight_node
 from agent.nodes.listing import make_listing_node
@@ -24,7 +25,7 @@ def route_after_supervisor(state: AgentState) -> str:
 
 
 def route_after_compliance(state: AgentState) -> str:
-    return "ads" if state.get("mode") == "full_chain" else "executor"
+    return "creative" if state.get("mode") == "full_chain" else "executor"
 
 
 def build_graph(
@@ -36,6 +37,7 @@ def build_graph(
     builder.add_node("insight", make_insight_node(services))
     builder.add_node("listing", make_listing_node(services))
     builder.add_node("compliance", make_compliance_node(services))
+    builder.add_node("creative", make_creative_node(services))
     builder.add_node("ads", make_ads_node(services))
     builder.add_node("ops", make_ops_node(services))
     builder.add_node("executor", make_executor_node(services))
@@ -51,8 +53,9 @@ def build_graph(
     builder.add_conditional_edges(
         "compliance",
         route_after_compliance,
-        {"ads": "ads", "executor": "executor"},
+        {"creative": "creative", "executor": "executor"},
     )
+    builder.add_edge("creative", "ads")
     builder.add_edge("ads", "ops")
     builder.add_edge("ops", "executor")
     builder.add_edge("executor", END)

@@ -502,6 +502,12 @@ PAIN_LABELS = {
     "hard to clean": "难清洁",
     "size/fit": "尺寸与容量",
     "quality": "质量",
+    "adhesion": "粘性",
+    "irritation": "刺激",
+    "no results": "效果",
+    "smell": "气味",
+    "packaging": "包装",
+    "value": "性价比",
 }
 POSITIVE_LABELS = {
     "portability": "便携",
@@ -557,7 +563,9 @@ NODE_LABELS = {
     "insight": "洞察",
     "listing": "Listing",
     "compliance": "合规",
+    "creative": "美工",
     "ads": "广告",
+    "ops": "运营",
     "executor": "执行器",
 }
 FALLBACK_DIAGNOSIS = (
@@ -1004,13 +1012,14 @@ def render_empty_state() -> None:
           <div class="panel">
             <div class="panel-kicker">还没有运行</div>
             <h2 class="panel-title">从一次评论洞察开始</h2>
-            <p class="panel-lede">在左侧选择 SKU 和运行模式。流水线会依次经过洞察、Listing、合规、广告，然后停在人工闸门前。</p>
+            <p class="panel-lede">在左侧选择 SKU 和运行模式。流水线会依次经过洞察、Listing、合规、美工、广告，然后停在人工闸门前。</p>
             <ol class="run-sheet">
               <li class="run-step"><span class="step-index">01</span><div><strong>洞察</strong><p>聚合评论痛点，引用原文证据。</p></div></li>
               <li class="run-step"><span class="step-index">02</span><div><strong>Listing</strong><p>检索历史高转化 Listing 与政策文档，生成新草稿。</p></div></li>
               <li class="run-step"><span class="step-index">03</span><div><strong>合规</strong><p>按规则检查当前 Listing 与新草稿，标出拦截项。</p></div></li>
-              <li class="run-step"><span class="step-index">04</span><div><strong>广告</strong><p>诊断 90 天广告数据，给出出价建议与 30 天回测。</p></div></li>
-              <li class="run-step gate"><span class="step-index">05</span><div><strong>审批闸门</strong><p>你批准后，执行器才写 dry-run 审计；拒绝则不执行。</p></div></li>
+              <li class="run-step"><span class="step-index">04</span><div><strong>美工</strong><p>从真实痛点生成 5 个素材位 brief，并用规则 rubric 审核叠字与证据。</p></div></li>
+              <li class="run-step"><span class="step-index">05</span><div><strong>广告</strong><p>诊断 90 天广告数据，给出出价建议与 30 天回测。</p></div></li>
+              <li class="run-step gate"><span class="step-index">06</span><div><strong>审批闸门</strong><p>你批准后，执行器才写 dry-run 审计；拒绝则不执行。</p></div></li>
             </ol>
           </div>
           <div class="panel">
@@ -1461,6 +1470,231 @@ def render_ads(ads: dict[str, Any]) -> None:
         st.json(backtest)
 
 
+CREATIVE_SLOT_LABELS = {
+    "hero": "主图",
+    "lifestyle": "场景图",
+    "detail": "细节图",
+    "comparison": "套装图",
+    "aplus": "A+ 横幅",
+}
+
+CREATIVE_STATUS_LABELS = {
+    "mock": "mock 未渲染",
+    "ready": "已生成",
+}
+
+CREATIVE_SEVERITY_LABELS = {
+    "block": "拦截",
+    "warn": "警告",
+    "info": "提示",
+}
+
+
+def _creative_slot(asset_id: Any) -> str:
+    slot = str(asset_id or "").split(":")[-1]
+    return CREATIVE_SLOT_LABELS.get(slot, slot or "—")
+
+
+def render_creative(
+    brief: dict[str, Any],
+    assets: list[dict[str, Any]],
+    review: dict[str, Any],
+) -> None:
+    if not brief or not review:
+        st.markdown(
+            '<div class="empty-row">运行 full_chain 后生成美工 brief 与审核；'
+            "listing_only / ads_only 不经过美工节点。</div>",
+            unsafe_allow_html=True,
+        )
+        return
+
+    score = int(round(float(review.get("score") or 0)))
+    passed = bool(review.get("passed"))
+    result = "通过" if passed else "需复核"
+    result_class = "pass-text" if passed else "block-text"
+    dimensions = review.get("dimensions") or []
+    findings = review.get("findings") or []
+    blocks = int(review.get("block_count") or 0)
+    warns = int(review.get("warn_count") or 0)
+    slot_labels = {
+        str(item.get("slot")): str(item.get("label")) for item in brief.get("assets") or []
+    }
+
+    st.markdown(
+        f'<div class="lead">{e(brief.get("sku_id"))}：{e(len(assets))} 个素材位，'
+        "brief 由真实评论痛点、SKU 属性与合规规则生成。</div>",
+        unsafe_allow_html=True,
+    )
+    st.caption(
+        "默认 mock 提供方不调用图像模型，素材未渲染；brief 与审核为确定性规则。"
+    )
+
+    st.markdown(
+        f"""
+        <div class="score-band">
+          <div class="score-card">
+            <div class="stat-label">审核分</div>
+            <div class="score-value">{score}</div>
+            <div class="score-track"><span style="width:{score}%"></span></div>
+            <div class="score-note {result_class}">{e(result)}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">素材位</div>
+            <div class="stat-value">{len(assets)}</div>
+            <div class="stat-note">主图 / 场景 / 细节 / 套装 / A+</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">拦截</div>
+            <div class="stat-value">{blocks}</div>
+            <div class="stat-note">发布前必须为零</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">警告</div>
+            <div class="stat-value">{warns}</div>
+            <div class="stat-note">需人工确认</div>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown('<div class="section-title">素材位</div>', unsafe_allow_html=True)
+    asset_rows = [
+        {
+            "slot": slot_labels.get(str(item.get("slot")), item.get("label")),
+            "ratio": item.get("ratio"),
+            "overlay": item.get("overlay_text")
+            or ("无文字（主图政策）" if item.get("slot") == "hero" else "无文字"),
+            "provider": item.get("provider"),
+            "status": CREATIVE_STATUS_LABELS.get(
+                str(item.get("status")), item.get("status")
+            ),
+        }
+        for item in assets
+    ]
+    render_table(
+        asset_rows,
+        [
+            ("slot", "素材位", ""),
+            ("ratio", "比例", "mono"),
+            ("overlay", "叠字", ""),
+            ("provider", "提供方", "mono"),
+            ("status", "状态", ""),
+        ],
+        empty="没有素材元数据",
+    )
+
+    st.markdown('<div class="section-title">审核维度</div>', unsafe_allow_html=True)
+    render_table(
+        [
+            {
+                "label": item.get("label"),
+                "score": f"{float(item.get('score') or 0):.1f}",
+                "weight": f"{float(item.get('weight') or 0):.0%}",
+            }
+            for item in dimensions
+        ],
+        [
+            ("label", "维度", ""),
+            ("score", "得分", "mono"),
+            ("weight", "权重", "mono"),
+        ],
+        empty="没有审核维度",
+    )
+
+    st.markdown('<div class="section-title">审核发现</div>', unsafe_allow_html=True)
+    render_table(
+        [
+            {
+                "dimension": next(
+                    (
+                        item.get("label")
+                        for item in dimensions
+                        if item.get("name") == finding.get("dimension")
+                    ),
+                    finding.get("dimension"),
+                ),
+                "severity": CREATIVE_SEVERITY_LABELS.get(
+                    str(finding.get("severity")), finding.get("severity")
+                ),
+                "asset": _creative_slot(finding.get("asset_id")),
+                "message": finding.get("message"),
+                "suggestion": finding.get("suggestion"),
+            }
+            for finding in findings
+        ],
+        [
+            ("dimension", "维度", ""),
+            ("severity", "级别", ""),
+            ("asset", "素材", ""),
+            ("message", "问题", ""),
+            ("suggestion", "建议", ""),
+        ],
+        empty="没有发现审核问题",
+    )
+
+    for item in brief.get("assets") or []:
+        with st.expander(
+            f"{item.get('label')} · {item.get('ratio')} · "
+            f"{'无叠字' if not item.get('overlay_text') else item.get('overlay_text')}"
+        ):
+            st.markdown(
+                f'<div class="lead">{e(item.get("purpose"))}</div>',
+                unsafe_allow_html=True,
+            )
+            st.markdown(
+                f'<p class="muted rationale">{e(item.get("scene"))}</p>',
+                unsafe_allow_html=True,
+            )
+            must_show = "".join(
+                f'<span class="tag">{e(value)}</span>'
+                for value in item.get("must_show") or []
+            )
+            must_avoid = "".join(
+                f'<span class="tag">{e(value)}</span>'
+                for value in item.get("must_avoid") or []
+            )
+            st.markdown(
+                '<div class="detail-grid">'
+                '<div class="detail-block"><div class="detail-label">必须展示</div>'
+                f'<div class="tag-row">{must_show or "—"}</div></div>'
+                '<div class="detail-block"><div class="detail-label">禁止</div>'
+                f'<div class="tag-row">{must_avoid or "—"}</div></div>'
+                "</div>",
+                unsafe_allow_html=True,
+            )
+            for evidence in item.get("evidence") or []:
+                kind = str(evidence.get("type") or "")
+                if kind == "pain":
+                    st.markdown(
+                        f'<div class="lead">“{e(evidence.get("quote"))}”</div>'
+                        f'<div class="cell-note">痛点 · {e(zh_theme(evidence.get("theme")))} · '
+                        f'{e(evidence.get("rating"))} 星 · {e(evidence.get("date"))} · '
+                        f'{e(evidence.get("review_id"))}</div>',
+                        unsafe_allow_html=True,
+                    )
+                elif kind == "positive_theme":
+                    st.markdown(
+                        f'<div class="cell-note">正向主题 · '
+                        f'{e(zh_theme(evidence.get("theme")))} · '
+                        f'{e(evidence.get("mentions"))} 次提及</div>',
+                        unsafe_allow_html=True,
+                    )
+                else:
+                    st.markdown(
+                        f'<div class="cell-note">SKU 属性 · '
+                        f'{e(evidence.get("value"))}</div>',
+                        unsafe_allow_html=True,
+                    )
+
+    st.markdown(
+        '<p class="muted rationale">默认 <code>CREATIVE_PROVIDER=mock</code>；'
+        "接入真实 AIGC 只需实现 <code>CreativeProvider.generate</code> 并在注册表登记，"
+        "节点、API 快照与 UI 不变。mock 未渲染图片，像素级构图需人工复核。</p>",
+        unsafe_allow_html=True,
+    )
+
+
 OPPORTUNITY_LABELS = {
     "demand": "需求",
     "rating": "评分",
@@ -1754,9 +1988,10 @@ def render_metrics(
             2. 运行流水线，打开「洞察」：痛点是真实评论引用。
             3. 打开「Listing」：新草稿引用了历史高转化 Listing。
             4. 打开「合规」：当前 Listing 有问题，新草稿通过。
-            5. 打开「广告」：ACOS 偏高、花费上涨，查看出价建议与回测。
-            6. 在侧栏批准：执行器写入 dry-run 审计。
-            7. 打开「指标」：节点耗时、调用成本、合规结果。
+            5. 打开「美工」：5 个素材位 brief 引用真实痛点；rubric 拦截禁用宣称，mock 不渲染图片。
+            6. 打开「广告」：ACOS 偏高、花费上涨，查看出价建议与回测。
+            7. 在侧栏批准：执行器写入 dry-run 审计。
+            8. 打开「指标」：节点耗时、调用成本、合规结果。
             """
         )
 
@@ -1782,6 +2017,9 @@ def main() -> None:
     insights = state.get("insights") or {}
     listing = state.get("draft_listing") or {}
     compliance = state.get("compliance_report") or {}
+    creative_brief = state.get("creative_brief") or {}
+    creative_assets = state.get("creative_assets") or []
+    creative_review = state.get("creative_review") or {}
     ads = state.get("ads_report") or {}
     ops_plan = state.get("ops_plan") or {}
     try:
@@ -1791,7 +2029,7 @@ def main() -> None:
 
     render_status_band(snapshot, metrics, state)
 
-    tabs = st.tabs(["洞察", "Listing", "合规", "广告", "选品", "审计", "指标"])
+    tabs = st.tabs(["洞察", "Listing", "合规", "美工", "广告", "选品", "审计", "指标"])
     with tabs[0]:
         render_insight(insights)
     with tabs[1]:
@@ -1799,12 +2037,14 @@ def main() -> None:
     with tabs[2]:
         render_compliance(compliance)
     with tabs[3]:
-        render_ads(ads)
+        render_creative(creative_brief, creative_assets, creative_review)
     with tabs[4]:
-        render_opportunity(opportunities, ops_plan)
+        render_ads(ads)
     with tabs[5]:
-        render_audit(state, snapshot)
+        render_opportunity(opportunities, ops_plan)
     with tabs[6]:
+        render_audit(state, snapshot)
+    with tabs[7]:
         render_metrics(metrics, ops_plan)
 
 

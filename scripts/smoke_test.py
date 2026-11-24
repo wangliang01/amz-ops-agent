@@ -40,6 +40,7 @@ def main() -> None:
     insights = state.get("insights") or {}
     listing = state.get("draft_listing") or {}
     compliance = state.get("compliance_report") or {}
+    creative = state.get("creative_review") or {}
     ads = state.get("ads_report") or {}
     metrics = state.get("metrics") or {}
     docs = state.get("retrieved_docs") or []
@@ -62,6 +63,12 @@ def main() -> None:
             "draft_issues": len(compliance.get("draft_issues", [])),
             "current_issues": len(compliance.get("current_listing_issues", [])),
             "fixed_count": compliance.get("fixed_count"),
+        },
+        "creative": {
+            "assets": len(state.get("creative_assets") or []),
+            "score": creative.get("score"),
+            "passed": creative.get("passed"),
+            "provider": creative.get("provider"),
         },
         "ads": {
             "last30_acos": (ads.get("last_30d") or {}).get("acos"),

@@ -24,6 +24,10 @@ def main() -> int:
     snapshot = backend.create_run({"sku_id": "SKU-003", "mode": "full_chain"})
     assert snapshot["status"] == "awaiting_approval", snapshot["status"]
     assert snapshot["next"] == ["executor"], snapshot["next"]
+    state = snapshot.get("state") or {}
+    assert len((state.get("creative_brief") or {}).get("assets") or []) == 5
+    assert (state.get("creative_review") or {}).get("passed") is True
+    assert (state.get("creative_review") or {}).get("provider") == "mock"
     run_id = snapshot["run_id"]
 
     completed = backend.approve(run_id, {"decision": "approved", "actor": "verify"})
@@ -43,8 +47,8 @@ def main() -> int:
 
     print(
         "LOCAL_BACKEND_OK "
-        f"skus={len(skus)} awaiting_approval=ok approve=5_dry_run "
-        f"audit={len(audit)}"
+        f"skus={len(skus)} awaiting_approval=ok creative=5_mock "
+        f"approve=5_dry_run audit={len(audit)}"
     )
     return 0
 

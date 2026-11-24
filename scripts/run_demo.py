@@ -67,7 +67,10 @@ def main() -> None:
             ("insights", "Insight"),
             ("draft_listing", "Listing draft"),
             ("compliance_report", "Compliance"),
+            ("creative_brief", "Creative brief"),
+            ("creative_review", "Creative review"),
             ("ads_report", "Ads diagnosis"),
+            ("ops_plan", "Ops plan"),
         ]:
             if state.get(key):
                 _section(title, state[key])

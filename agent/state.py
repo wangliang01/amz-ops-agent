@@ -19,6 +19,9 @@ class AgentState(TypedDict, total=False):
     draft_listing: dict[str, Any]
     compliance_report: dict[str, Any]
     ads_report: dict[str, Any]
+    creative_brief: dict[str, Any]
+    creative_assets: list[dict[str, Any]]
+    creative_review: dict[str, Any]
     ops_plan: dict[str, Any]
 
     proposals: list[dict[str, Any]]

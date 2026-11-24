@@ -23,6 +23,7 @@ NODE_MINUTES = {
     "insight": 10,
     "listing": 25,
     "compliance": 10,
+    "creative": 15,
     "ads": 15,
     "ops": 10,
 }

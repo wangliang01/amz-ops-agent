@@ -13,7 +13,7 @@ APP = Path(
         str(Path(__file__).resolve().parents[1] / "app" / "streamlit_app.py"),
     )
 )
-EXPECTED_TABS = ["洞察", "Listing", "合规", "广告", "选品", "审计", "指标"]
+EXPECTED_TABS = ["洞察", "Listing", "合规", "美工", "广告", "选品", "审计", "指标"]
 EXPECTED_ACTIONS = 5
 
 
@@ -53,6 +53,9 @@ def main() -> int:
     assert snapshot.get("status") == "awaiting_approval", snapshot.get("status")
     assert snapshot.get("next") == ["executor"], snapshot.get("next")
     assert labels(at.tabs) == EXPECTED_TABS, labels(at.tabs)
+    state = snapshot.get("state") or {}
+    assert len((state.get("creative_brief") or {}).get("assets") or []) == 5
+    assert (state.get("creative_review") or {}).get("passed") is True
     assert "批准并执行 dry-run" in labels(at.button)
     assert "拒绝" in labels(at.button)
 
@@ -87,7 +90,7 @@ def main() -> int:
     assert log[0].get("status") == "rejected", log[0].get("status")
 
     print(
-        "UI_VERIFY_OK tabs=7 awaiting_approval=ok "
+        "UI_VERIFY_OK tabs=8 awaiting_approval=ok "
         "approve=5_dry_run reject=1_skip errors=0"
     )
     return 0

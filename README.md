@@ -2,7 +2,7 @@
 
 > Multi-Agent Operations Copilot for Amazon Sellers — LangGraph · RAG · FastAPI
 
-一个面向亚马逊运营的 Multi-Agent Demo：把「评论洞察 → Listing 生成 → 合规审查 → 广告诊断 → 人工审批 → dry-run 执行」串成一条可演示、可回测、可量化的业务链路。
+一个面向亚马逊运营的 Multi-Agent Demo：把「评论洞察 → Listing 生成 → 合规审查 → 美工 brief/审核 → 广告诊断 → 人工审批 → dry-run 执行」串成一条可演示、可回测、可量化的业务链路。
 
 > 商品与评论来自公开研究数据集 Amazon Reviews 2023（All Beauty），品牌名已匿名化；广告、库存、成本、转化率为模拟数据。接口形状模仿 SP-API / Ads API，便于后续替换。合规规则为演示摘要，不构成法律建议。本项目与 Amazon 无关联。
 
@@ -14,6 +14,7 @@
 |---|---|
 | 流程自动化 | 一条命令/一个 API 跑完整链路；节点级耗时、token、成本、审计日志 |
 | AIGC 内容生产 | Listing 标题/五点/描述/关键词生成 + 21 条规则审查 + 人工抽检入口 |
+| AIGC 美工 | 从真实评论痛点生成 5 个素材位 brief；叠字走合规规则；确定性审核 rubric；provider 可插拔（默认 mock） |
 | 数据链路 | 真实 Amazon 公开评论与商品元数据（品牌匿名）+ 模拟 90 天广告数据；建议可回测 |
 | Multi-Agent 编排 | LangGraph 状态图、Supervisor 路由、HITL 断点、失败降级 |
 | RAG | Chroma/BM25 混合检索、RRF、metadata 过滤、引用、10 条 golden case |
@@ -101,6 +102,10 @@ docker compose up --build
 - 如果厂商没有 embeddings 接口，设置 `EMBEDDING_ENABLED=false`，检索退化为 BM25 + RRF。
 - 有 embeddings 时，Chroma 会建立持久化索引，检索走 BM25 + dense 混合。
 
+### 美工 AIGC provider
+
+默认 `CREATIVE_PROVIDER=mock`：`agent/creative.py` 确定性生成 5 个素材位 brief，mock provider 只返回素材元数据，不调用图像模型，也不产生费用。接入真实 AIGC 时实现 `CreativeProvider.generate(brief, sku)` 并在 `PROVIDERS` 注册；节点、API 快照与 UI 不变。生成后由 `review_creative` 用同一套合规规则审核叠字与证据。
+
 ---
 
 ## 架构
@@ -108,10 +113,10 @@ docker compose up --build
 ```
 Streamlit 单页 ──HTTP──> FastAPI ──> LangGraph
                                       │
-        ┌─────────────┬───────────────┼──────────────┐
-        ▼             ▼               ▼              ▼
-     Insight       Listing        Compliance        Ads
-        └─────────────┴───────┬───────┴──────────────┘
+        ┌─────────────┬───────────────┬──────────────┬──────────────┬──────────────┐
+        ▼             ▼               ▼              ▼              ▼              ▼
+     Insight       Listing        Compliance       Creative        Ads            Ops
+        └─────────────┴───────┬───────┴──────────────┴──────────────┴──────────────┘
                               ▼
                         Approval Gate (interrupt)
                               ▼
@@ -139,13 +144,14 @@ Streamlit 单页 ──HTTP──> FastAPI ──> LangGraph
 | Insight | 评论痛点聚类、正负主题、竞品差距、原文引用 | 关键词规则 |
 | Listing | 检索历史高转化 Listing + 政策，生成标题/五点/描述/关键词 | 模板 + 关键词库 |
 | Compliance | 21 条规则 + LLM 复核；同时检查当前 Listing 和新草稿 | 仅规则检查 |
+| Creative | 5 个素材位 brief（主图/场景/细节/套装/A+）；叠字合规与 rubric 审核；provider 可插拔 | 默认 mock 元数据，不调图像模型 |
 | Ads | 90 天趋势、异常检测、关键词出价建议、30 天回测 | 规则降价/加价 |
 | Ops | 可售天数、补货点/补货量、日预算调整、价格护栏、ROI | 固定公式 + 显式模拟假设 |
 | Executor | HITL 审批后 dry-run，写审计日志和指标 | 拒绝/未审批时跳过 |
 
 模式：
 
-- `full_chain`：Insight → Listing → Compliance → Ads → Ops → Approval → Executor
+- `full_chain`：Insight → Listing → Compliance → Creative → Ads → Ops → Approval → Executor
 - `listing_only`：Insight → Listing → Compliance → Approval → Executor
 - `ads_only`：Ads → Ops → Approval → Executor
 - `auto`：由 Supervisor 选择
@@ -203,6 +209,7 @@ Streamlit 单页 ──HTTP──> FastAPI ──> LangGraph
 - `compliance_pass_rate`：没有 `block` 级问题的运行占比。
 - 广告回测：基于弹性假设的估算，不是线上实测。
 - 机会分：需求 / 评分 / 痛点密度 / 竞争密度 / 毛利空间的固定权重加权分（30/20/25/15/10），不是销量预测。
+- 美工 brief / rubric：brief 由真实评论痛点、SKU 属性与合规规则确定性生成；rubric 审核素材元数据与叠字，默认 mock 未渲染图片，像素级构图标为「无法验证」。
 - 补货 / 预算 / 定价：库存、日销、提前期、安全库存、成本、广告预算均为模拟；输出里逐项标注。
 - ROI：人工分钟节省按节点固定估算，时薪与 ACOS 变化都是假设，不是工时或线上实测。
 
@@ -212,14 +219,15 @@ Streamlit 单页 ──HTTP──> FastAPI ──> LangGraph
 
 - CLI：`scripts/run_demo.py` 全链路通过，审批后 5 条 dry-run 动作。
 - API：`/runs` → `awaiting_approval` → `/approve` → `completed`。
-- UI：Streamlit 页面渲染、运行、审批、审计、指标均通过；选品排名与 ROI 面板已浏览器实测。
+- UI：Streamlit 页面渲染、运行、审批、审计、指标均通过；8 个 tab，选品排名、美工 brief/rubric 与 ROI 面板已浏览器实测。
+- 美工：`scripts/verify_creative` 通过（5 个素材位、主图无叠字、mock provider、`Best Seller` 负向对照被 block、5 条 dry-run）。
 - 运营计划：`scripts/verify_ops` 通过（5 个 SKU 确定性排名、补货/预算/定价字段、5 条 dry-run）。
 - 评测：无 LLM 兜底 10/10；真实 LLM `--require-llm` 9/10（`G-003` 草稿未包含精确短语 `nail art drill`，其余 9 条通过；未为过测放宽 golden）。
 - 数据：5 个真实商品 + 250 条真实评论 + 20 条真实历史 Listing；广告/库存/成本为模拟。
 - 部署：Streamlit Community Cloud 在线 Demo 已跑通审批与 dry-run。
 - Docker：`docker compose config` 校验通过；镜像构建未执行（本机 Docker daemon 未启动）。
 
-未验证：真实 SP-API / Ads API 接入；多站点/多店铺；图像/视频素材生成。
+未验证：真实 SP-API / Ads API 接入；多站点/多店铺；真实图像/视频生成（当前只有 brief、mock 素材元数据与 rubric）。
 
 ---
 
@@ -232,8 +240,9 @@ amz-ops-agent/
 │   ├── state.py              # AgentState
 │   ├── services.py           # LLM / Store / Retriever 装配
 │   ├── opportunity.py        # 选品机会排名（确定性加权分 + 评论证据）
+│   ├── creative.py           # 美工 brief + 审核 rubric + provider 接口
 │   ├── ops_plan.py           # 补货 / 预算 / 定价 / ROI（模拟假设）
-│   └── nodes/                # supervisor / insight / listing / compliance / ads / ops / executor
+│   └── nodes/                # supervisor / insight / listing / compliance / creative / ads / ops / executor
 ├── api/main.py               # FastAPI
 ├── app/streamlit_app.py      # 演示台
 ├── core/
@@ -249,7 +258,7 @@ amz-ops-agent/
 │   ├── generate_seed.py      # 合成数据兜底（默认拒绝覆盖真实种子）
 │   └── seed/                 # SKU / 评论 / Listing / 广告 / 规则 / 政策 / PROVENANCE
 ├── evals/                    # golden set + 评测脚本
-├── scripts/                  # CLI demo + smoke test + verify_ops / verify_ui
+├── scripts/                  # CLI demo + smoke test + verify_creative / verify_ops / verify_ui
 ├── requirements.txt
 ├── run.ps1
 └── .env.example
@@ -264,7 +273,7 @@ amz-ops-agent/
 | `GET` | `/health` | 健康检查、LLM/向量索引状态 |
 | `GET` | `/skus` | 可选 SKU 列表 |
 | `GET` | `/opportunities` | 选品机会排名（加权分、驱动因素、评论证据） |
-| `POST` | `/runs` | 创建并运行，返回 `awaiting_approval` 或 `completed` |
+| `POST` | `/runs` | 创建并运行，返回 `awaiting_approval` 或 `completed`；`full_chain` 的 `state` 含 `creative_brief` / `creative_assets` / `creative_review` |
 | `GET` | `/runs/{id}` | 查询运行状态和状态快照 |
 | `POST` | `/runs/{id}/approve` | `approved` / `rejected`，恢复图执行 |
 | `GET` | `/runs` | 最近运行列表 |
@@ -307,14 +316,15 @@ Invoke-RestMethod "http://127.0.0.1:8000/runs/$($run.run_id)/approve" -Method Po
 ## 5 分钟演示脚本
 
 1. 选 `SKU-003`：真实颈膜商品，3.4 星、2945 条评论，评论集中在效果不足、粘不住、扯皮肤。
-2. 点 **运行流水线**，四个 Agent 依次跑完。
+2. 点 **运行流水线**，多个 Agent 依次跑完。
 3. **Insight**：痛点来自真实评论原文与引用。
 4. **Listing**：新标题/五点，引用真实历史高转化 Listing。
 5. **Compliance**：当前 Listing 的真实宣称（medical grade、Made in USA、Guarantee）被规则命中，新草稿通过。
-6. **Ads**：ACOS 偏高、花费上涨、5 条降价建议、30 天回测（广告为模拟数据）。
-7. **选品**：5 个 SKU 的机会排名、驱动因素与真实评论证据；下方是补货、日预算、价格护栏。
-8. 侧边栏 **Approve**：执行器写 dry-run 审计日志。
-9. **Metrics**：耗时、token、成本、合规通过率、ROI（人工分钟节省、净收益）。
+6. **美工**：5 个素材位 brief（主图无叠字，细节图引用真实痛点）；rubric 用同一套合规规则拦截禁用宣称；默认 mock 不渲染图片。
+7. **Ads**：ACOS 偏高、花费上涨、5 条降价建议、30 天回测（广告为模拟数据）。
+8. **选品**：5 个 SKU 的机会排名、驱动因素与真实评论证据；下方是补货、日预算、价格护栏。
+9. 侧边栏 **Approve**：执行器写 dry-run 审计日志。
+10. **Metrics**：耗时、token、成本、合规通过率、ROI（人工分钟节省、净收益）。
 
 ---
 
