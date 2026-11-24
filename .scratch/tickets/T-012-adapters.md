@@ -56,4 +56,5 @@
   - `compileall` 退出 0；`git diff --check` 通过；未新增依赖
   - `/health`（TestClient + lifespan）：`{"ok":true,"llm_enabled":false,"vector_index":false,"adapters":{"mode":"mock","read_only":true,"sp_api":{"provider":"mock_sp_api","capabilities":["get_catalog_item","get_inventory","get_listing"]},"ads_api":{"provider":"mock_ads_api","capabilities":["get_daily_metrics","get_keyword_performance"]}}}`
 - 本地浏览器 E2E（`:8503`，`API_BASE_URL=local`）：侧栏显示 adapter 只读 caption；`full_chain` 停在审批，8 个 tab；选品页显示库存 95 / 补货点 58 / 预算 $48.7→$34.1；批准后审计 5 条 `dry-run 成功`。截图：`.scratch/ui/T-012/empty-local-1440.png`、`awaiting-local-1440.png`、`ops-local-1440.png`、`completed-local-1440.png`、`audit-local-1440.png`。
+- 提交：`b5753cd`（实现 + 文档 + 验证脚本）。
 - 未做：真实 SP-API / Ads API 调用、OAuth/凭据、真实店铺写接口。
