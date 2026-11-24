@@ -11,6 +11,7 @@ import math
 from typing import Any
 
 from core.store import SeedStore
+from integrations import Adapters, build_adapters
 
 LEAD_TIME_DAYS = 30
 SAFETY_STOCK_DAYS = 14
@@ -35,12 +36,13 @@ def _round_up_to(value: float, step: int) -> int:
     return int(math.ceil(value / step) * step)
 
 
-def _inventory(store: SeedStore, sku: dict[str, Any]) -> dict[str, Any]:
+def _inventory(adapters: Adapters, sku: dict[str, Any]) -> dict[str, Any]:
     price = float(sku.get("price") or 0)
-    rows = store.ads_for(str(sku["sku_id"]), days=30)
+    rows = adapters.ads.get_daily_metrics(str(sku["sku_id"]), days=30)
     sales = sum(float(row.get("sales") or 0) for row in rows)
     daily_units = sales / price / 30 if price and rows else 0.0
-    on_hand = int(sku.get("stock") or 0)
+    inventory = adapters.sp_api.get_inventory(str(sku["sku_id"]))
+    on_hand = int(inventory.get("available") or 0)
     days_of_cover = on_hand / daily_units if daily_units else None
     reorder_point = _round_up_to(daily_units * (LEAD_TIME_DAYS + SAFETY_STOCK_DAYS), 1)
     target_days = LEAD_TIME_DAYS + SAFETY_STOCK_DAYS + 30
@@ -55,6 +57,9 @@ def _inventory(store: SeedStore, sku: dict[str, Any]) -> dict[str, Any]:
         status = "healthy"
     return {
         "on_hand": on_hand,
+        "available": int(inventory.get("available") or 0),
+        "inbound": int(inventory.get("inbound") or 0),
+        "source": inventory.get("source"),
         "daily_units": round(daily_units, 2),
         "days_of_cover": round(days_of_cover, 1) if days_of_cover is not None else None,
         "lead_time_days": LEAD_TIME_DAYS,
@@ -65,8 +70,8 @@ def _inventory(store: SeedStore, sku: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _budget(store: SeedStore, sku: dict[str, Any]) -> dict[str, Any]:
-    rows = store.ads_for(str(sku["sku_id"]), days=30)
+def _budget(adapters: Adapters, sku: dict[str, Any]) -> dict[str, Any]:
+    rows = adapters.ads.get_daily_metrics(str(sku["sku_id"]), days=30)
     spend = sum(float(row.get("spend") or 0) for row in rows)
     sales = sum(float(row.get("sales") or 0) for row in rows)
     daily_budget = spend / 30 if rows else 0.0
@@ -152,14 +157,22 @@ def build_ops_plan(
     ads_report: dict[str, Any] | None = None,
     compliance_report: dict[str, Any] | None = None,
     metrics: dict[str, Any] | None = None,
+    adapters: Adapters | None = None,
 ) -> dict[str, Any]:
-    inventory = _inventory(store, sku)
-    budget = _budget(store, sku)
+    adapters = adapters or build_adapters(store)
+    inventory = _inventory(adapters, sku)
+    budget = _budget(adapters, sku)
     price = _price(sku)
     roi = _roi(ads_report, compliance_report, metrics)
     return {
         "sku_id": str(sku["sku_id"]),
         "simulated": True,
+        "adapter_mode": adapters.mode,
+        "adapter_sources": {
+            "sp_api": adapters.sp_api.name,
+            "ads_api": adapters.ads.name,
+            "read_only": True,
+        },
         "inventory": inventory,
         "budget": budget,
         "price_guardrail": price,
@@ -172,5 +185,13 @@ def build_ops_plan(
             {"item": "广告日预算", "value": "30 天花费 / 30", "simulated": True},
             {"item": "标价", "value": "真实公开标价", "simulated": False},
             {"item": "单位成本", "value": "模拟", "simulated": True},
+            {
+                "item": "数据适配器",
+                "value": (
+                    f"SP-API {adapters.sp_api.name} · Ads API {adapters.ads.name}"
+                    "（只读 mock）"
+                ),
+                "simulated": True,
+            },
         ],
     }

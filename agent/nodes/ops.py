@@ -17,6 +17,7 @@ def make_ops_node(services: Services):
             ads_report=state.get("ads_report"),
             compliance_report=state.get("compliance_report"),
             metrics=state.get("metrics"),
+            adapters=services.adapters,
         )
         return {
             "ops_plan": plan,

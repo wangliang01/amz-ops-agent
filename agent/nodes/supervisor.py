@@ -17,7 +17,7 @@ def make_supervisor_node(services: Services):
         errors = list(state.get("errors") or [])
 
         try:
-            sku = services.store.sku(sku_id)
+            sku = services.adapters.sp_api.get_catalog_item(sku_id)
         except KeyError as exc:
             errors.append(str(exc))
             return {

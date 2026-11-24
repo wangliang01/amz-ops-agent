@@ -40,6 +40,9 @@ def main() -> int:
     at = AppTest.from_file(str(APP), default_timeout=180)
     at.run()
     assert not at.error, [str(item.value) for item in at.error]
+    assert any("数据适配器" in str(item.value) for item in at.caption), [
+        str(item.value) for item in at.caption
+    ]
     assert labels(at.selectbox) == ["商品 SKU", "运行模式"]
     assert labels(at.button) == ["运行流水线"]
     assert labels(at.tabs) == []

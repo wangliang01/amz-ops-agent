@@ -169,12 +169,12 @@ def make_ads_node(services: Services):
         started = time.perf_counter()
         sku = state["sku"]
         price = float(sku["price"])
-        rows = services.store.ads_for(sku["sku_id"], days=90)
+        rows = services.adapters.ads.get_daily_metrics(sku["sku_id"], days=90)
         df = pd.DataFrame(rows)
 
         last30 = _aggregate(df.tail(30), price)
         prev30 = _aggregate(df.iloc[-60:-30], price)
-        keywords = services.store.ad_keywords_for(sku["sku_id"])
+        keywords = services.adapters.ads.get_keyword_performance(sku["sku_id"])
         target = float(sku.get("target_acos") or services.cfg.target_acos)
 
         anomalies = []
@@ -258,6 +258,7 @@ def make_ads_node(services: Services):
         backtest = _backtest(keywords, recommendations)
         report = {
             "sku_id": sku["sku_id"],
+            "source": services.adapters.ads.name,
             "target_acos": target,
             "last_30d": last30,
             "previous_30d": prev30,

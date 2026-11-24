@@ -34,7 +34,14 @@ $env:LLM_ENABLED="false"; $env:EMBEDDING_ENABLED="false"
 .\.venv\Scripts\python.exe -m scripts.smoke_test
 .\.venv\Scripts\python.exe -m scripts.verify_ops
 .\.venv\Scripts\python.exe -m scripts.verify_creative
+.\.venv\Scripts\python.exe -m scripts.verify_adapters
 .\.venv\Scripts\python.exe -m scripts.verify_local_backend
+```
+
+`scripts.verify_adapters` 校验只读 mock adapter、种子拷贝隔离、未知 SKU 报错、fake adapter 替换后 Ops 使用新数据，以及 `full_chain` 闸门：
+
+```text
+ADAPTERS_VERIFY_OK sp=mock_sp_api ads=mock_ads_api read_only=yes inventory=95 daily_rows=90 fake_swap=ok execution=5_dry_run
 ```
 
 `scripts.verify_creative` 校验 5 个素材位 brief 的确定性、主图无叠字、mock provider 不渲染、rubric 基线，以及注入 `Best Seller` 的负向对照必须被 block：
@@ -52,7 +59,7 @@ OPS_VERIFY_OK skus=5 top=SKU-001:67.5 drivers=5 evidence=2 execution=5_dry_run
 `scripts.verify_local_backend` 使用临时 `runs.sqlite` / `checkpoints.sqlite`，验证 Streamlit 云端单进程后端的完整闸门：
 
 ```text
-LOCAL_BACKEND_OK skus=5 awaiting_approval=ok creative=5_mock approve=5_dry_run audit=6
+LOCAL_BACKEND_OK skus=5 awaiting_approval=ok creative=5_mock adapters=mock approve=5_dry_run audit=6
 ```
 
 `evals.run_eval` 期望（2026-11-24 实测）：
@@ -73,6 +80,7 @@ G-010    SKU-005  PASS    -
   "errors": [],
   "compliance": {"passed": true, "score": 100, "draft_issues": 0, "current_issues": 2, "fixed_count": 2},
   "creative": {"assets": 5, "score": 100.0, "passed": true, "provider": "mock"},
+  "adapters": {"mode": "mock", "sp_api": "mock_sp_api", "ads_api": "mock_ads_api"},
   "execution_actions": 5,
   "metrics": {"llm_calls": 0}
 }
@@ -105,12 +113,12 @@ curl.exe -s -X POST http://127.0.0.1:8000/runs -H "Content-Type: application/jso
 期望：
 
 ```
-{"ok":true,"llm_enabled":false,"vector_index":false}
+{"ok":true,"llm_enabled":false,"vector_index":false,"adapters":{"mode":"mock","read_only":true,"sp_api":{"provider":"mock_sp_api","capabilities":["get_catalog_item","get_inventory","get_listing"]},"ads_api":{"provider":"mock_ads_api","capabilities":["get_daily_metrics","get_keyword_performance"]}}}
 ```
 
 - `/skus` 返回 5 个 SKU。
 - `/opportunities` 返回 `items` 5 条，`rank` 1–5，每条含 `score` / `drivers` / `evidence`。
-- `/runs` 返回 `"status":"awaiting_approval"`、`"next":["executor"]`；`state.ops_plan` 含 `inventory` / `budget` / `price_guardrail` / `roi`，`state.creative_brief` 含 5 个素材位，`state.creative_review` 为 `passed=true`；记下 `run_id`。
+- `/runs` 返回 `"status":"awaiting_approval"`、`"next":["executor"]`；`state.ops_plan` 含 `inventory` / `budget` / `price_guardrail` / `roi` / `adapter_mode` / `adapter_sources`，`state.creative_brief` 含 5 个素材位，`state.creative_review` 为 `passed=true`；记下 `run_id`。
 
 批准：
 
@@ -128,7 +136,7 @@ curl.exe -s -X POST http://127.0.0.1:8000/runs/<run_id>/approve -H "Content-Type
 
 打开 <http://localhost:8501>：
 
-1. 侧栏选 `SKU-003`（真实颈膜商品，3.4 星）+ `full_chain`，点 **运行流水线**。
+1. 侧栏选 `SKU-003`（真实颈膜商品，3.4 星）+ `full_chain`，点 **运行流水线**。侧栏应显示「数据适配器：SP-API mock · Ads API mock（只读）」。
 2. 期望：状态 `等待审批`；主区出现 洞察 / Listing / 合规 / 美工 / 广告 / 选品 / 审计 / 指标 八个 tab。
 3. 打开 **美工**：5 个素材位 brief、审核分与 rubric 维度；主图显示「无文字（主图政策）」，mock 资产标为未渲染；展开可看真实评论证据。打开 **选品**：5 个 SKU 的机会排名、驱动因素与真实评论证据；下方是补货/预算/定价。打开 **指标**：ROI 显示人工分钟节省、LLM 成本与净收益。
 4. 侧栏点 **批准并执行 dry-run**。期望：状态 `已完成`；`审计` 出现 5 条 dry-run 记录；`指标` 显示 `模型调用: 0`（无 LLM 时）。

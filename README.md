@@ -19,6 +19,7 @@
 | Multi-Agent 编排 | LangGraph 状态图、Supervisor 路由、HITL 断点、失败降级 |
 | RAG | Chroma/BM25 混合检索、RRF、metadata 过滤、引用、10 条 golden case |
 | 选品机会 | 5 个真实 SKU 的加权机会分：需求、评分、痛点密度、竞争密度、毛利空间 + 评论证据 |
+| SP-API / Ads API | 只读 adapter 隔离目录/库存/Listing 与广告日报/关键词；默认 mock 复用种子，真实接入只换 adapter |
 | 库存 / 预算 / 定价 | 可售天数、补货点与补货量、日预算调整、毛利底价护栏（模拟假设逐项标注） |
 | 量化 / ROI | 合规通过率、修复数、ACOS 变化、预计花费变化、单次成本、人工分钟节省与净收益 |
 
@@ -106,6 +107,17 @@ docker compose up --build
 
 默认 `CREATIVE_PROVIDER=mock`：`agent/creative.py` 确定性生成 5 个素材位 brief，mock provider 只返回素材元数据，不调用图像模型，也不产生费用。接入真实 AIGC 时实现 `CreativeProvider.generate(brief, sku)` 并在 `PROVIDERS` 注册；节点、API 快照与 UI 不变。生成后由 `review_creative` 用同一套合规规则审核叠字与证据。
 
+### SP-API / Ads API 适配器
+
+节点不直接读种子，而是通过只读 adapter 取数：
+
+| 接口 | 方法 | mock 数据源 | 真实接入方向 |
+|---|---|---|---|
+| `SPAPIAdapter` | `get_catalog_item` / `get_inventory` / `get_listing` | 真实公开商品元数据 + 模拟库存 | Catalog Items / FBA Inventory / Listings API |
+| `AdsAPIAdapter` | `get_daily_metrics` / `get_keyword_performance` | 模拟 90 天广告日报与关键词 | Amazon Ads API reporting |
+
+默认 `ADAPTER_MODE=mock`；`integrations/adapters.py` 是唯一装配点。真实接入时实现 Protocol 并注册，节点、API 快照与 UI 不变。adapter 只读，`executor` 仍只写 dry-run 审计，没有店铺写接口。
+
 ---
 
 ## 架构
@@ -131,6 +143,7 @@ Streamlit 单页 ──HTTP──> FastAPI ──> LangGraph
 - **检索层**：`rag/retriever.py`，BM25 + Chroma dense + RRF + metadata 过滤。
 - **编排层**：`agent/graph.py`，LangGraph `StateGraph` + `MemorySaver` + `interrupt_before`。
 - **执行层**：`agent/nodes/executor.py`，只做 dry-run，写审计日志。
+- **集成层**：`integrations/`，只读 SP-API / Ads API adapter；默认 mock，真实客户端不改变节点。
 - **接口层**：`api/main.py`，FastAPI；`app/streamlit_app.py`，演示台。
 - **评测层**：`evals/run_eval.py`，10 条 golden case。
 
@@ -210,6 +223,7 @@ Streamlit 单页 ──HTTP──> FastAPI ──> LangGraph
 - 广告回测：基于弹性假设的估算，不是线上实测。
 - 机会分：需求 / 评分 / 痛点密度 / 竞争密度 / 毛利空间的固定权重加权分（30/20/25/15/10），不是销量预测。
 - 美工 brief / rubric：brief 由真实评论痛点、SKU 属性与合规规则确定性生成；rubric 审核素材元数据与叠字，默认 mock 未渲染图片，像素级构图标为「无法验证」。
+- 数据来源：`ops_plan.adapter_mode` 与 `adapter_sources` 标明 SP-API / Ads API provider，默认 `mock_sp_api` / `mock_ads_api`，均为只读。
 - 补货 / 预算 / 定价：库存、日销、提前期、安全库存、成本、广告预算均为模拟；输出里逐项标注。
 - ROI：人工分钟节省按节点固定估算，时薪与 ACOS 变化都是假设，不是工时或线上实测。
 
@@ -221,13 +235,14 @@ Streamlit 单页 ──HTTP──> FastAPI ──> LangGraph
 - API：`/runs` → `awaiting_approval` → `/approve` → `completed`。
 - UI：Streamlit 页面渲染、运行、审批、审计、指标均通过；8 个 tab，选品排名、美工 brief/rubric 与 ROI 面板已浏览器实测。
 - 美工：`scripts/verify_creative` 通过（5 个素材位、主图无叠字、mock provider、`Best Seller` 负向对照被 block、5 条 dry-run）。
+- 适配器：`scripts/verify_adapters` 通过（只读 mock、90 天广告日报、fake adapter 替换后 Ops 使用新数据、5 条 dry-run）。
 - 运营计划：`scripts/verify_ops` 通过（5 个 SKU 确定性排名、补货/预算/定价字段、5 条 dry-run）。
 - 评测：无 LLM 兜底 10/10；真实 LLM `--require-llm` 9/10（`G-003` 草稿未包含精确短语 `nail art drill`，其余 9 条通过；未为过测放宽 golden）。
 - 数据：5 个真实商品 + 250 条真实评论 + 20 条真实历史 Listing；广告/库存/成本为模拟。
 - 部署：Streamlit Community Cloud 在线 Demo 已跑通审批与 dry-run。
 - Docker：`docker compose config` 校验通过；镜像构建未执行（本机 Docker daemon 未启动）。
 
-未验证：真实 SP-API / Ads API 接入；多站点/多店铺；真实图像/视频生成（当前只有 brief、mock 素材元数据与 rubric）。
+未验证：真实 SP-API / Ads API 接入（当前为只读 mock adapter，未做 OAuth/凭据）；多站点/多店铺；真实图像/视频生成（当前只有 brief、mock 素材元数据与 rubric）。
 
 ---
 
@@ -245,6 +260,7 @@ amz-ops-agent/
 │   └── nodes/                # supervisor / insight / listing / compliance / creative / ads / ops / executor
 ├── api/main.py               # FastAPI
 ├── app/streamlit_app.py      # 演示台
+├── integrations/             # 只读 SP-API / Ads API adapter + mock
 ├── core/
 │   ├── config.py             # 环境变量
 │   ├── llm.py                # OpenAI 兼容客户端 + JSON 解析 + 兜底
@@ -270,7 +286,7 @@ amz-ops-agent/
 
 | 方法 | 路径 | 说明 |
 |---|---|---|
-| `GET` | `/health` | 健康检查、LLM/向量索引状态 |
+| `GET` | `/health` | 健康检查、LLM/向量索引/适配器状态 |
 | `GET` | `/skus` | 可选 SKU 列表 |
 | `GET` | `/opportunities` | 选品机会排名（加权分、驱动因素、评论证据） |
 | `POST` | `/runs` | 创建并运行，返回 `awaiting_approval` 或 `completed`；`full_chain` 的 `state` 含 `creative_brief` / `creative_assets` / `creative_review` |
@@ -308,6 +324,7 @@ Invoke-RestMethod "http://127.0.0.1:8000/runs/$($run.run_id)/approve" -Method Po
 - **Workflow 优先，Agent 只做判断类任务**：数据清洗、规则命中用确定性代码；文案、诊断、建议才交给 LLM。
 - **规则 + LLM 双通道**：规则保证下限，LLM 补充语义判断；任何一路失败都不会让链路中断。
 - **HITL + dry-run**：不接真实写接口，审批后只写审计日志；演示安全，也符合企业落地方式。
+- **适配器边界**：目录/库存/Listing/广告数据走只读 Protocol；真实 API 只替换 adapter，审批与 dry-run 不变。
 - **可量化优先**：每次运行都记录耗时、token、成本、合规结果；广告建议带回测。
 - **2 天 MVP 边界**：真实 SP-API/Ads API、图片/视频生成、MCP/A2A、完整评测集不在关键路径；Docker 配置已提供，但未做镜像构建验证。
 

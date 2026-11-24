@@ -70,6 +70,15 @@ def main() -> None:
             "passed": creative.get("passed"),
             "provider": creative.get("provider"),
         },
+        "adapters": {
+            "mode": (state.get("ops_plan") or {}).get("adapter_mode"),
+            "sp_api": ((state.get("ops_plan") or {}).get("adapter_sources") or {}).get(
+                "sp_api"
+            ),
+            "ads_api": ((state.get("ops_plan") or {}).get("adapter_sources") or {}).get(
+                "ads_api"
+            ),
+        },
         "ads": {
             "last30_acos": (ads.get("last_30d") or {}).get("acos"),
             "anomalies": [item["type"] for item in ads.get("anomalies", [])],

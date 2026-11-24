@@ -1,20 +1,20 @@
 # 进度看板
 
 > 规则：Pending ≤ 15；一个 Ticket 一个提交；做完立刻更新。
-> Last updated: 2026-11-24 (美工 AIGC 完成)
+> Last updated: 2026-11-24 (SP-API / Ads adapter 完成)
 > Mode: implement
 
 ## 冷启动摘要（新会话先读这里）
 - 项目：Amazon 卖家多智能体运营副驾驶演示（LangGraph + RAG + FastAPI + Streamlit）
-- 当前状态：可跑；种子为真实公开评论/商品（品牌匿名）+ 模拟广告；链路已扩展到选品机会、补货、预算/定价、ROI 与美工 AIGC brief/rubric（默认 mock，不调图像模型）；无 LLM key / 显式关闭 LLM 时走规则兜底；Agnes AI 真实 LLM 回归 9/10（`G-003` 未命中 `nail art drill`，未放宽 golden）；Streamlit Cloud 单进程入口已上线
+- 当前状态：可跑；种子为真实公开评论/商品（品牌匿名）+ 模拟广告；链路已扩展到选品机会、补货、预算/定价、ROI 与美工 AIGC brief/rubric（默认 mock，不调图像模型）；目录/库存/Listing/广告经只读 SP-API/Ads mock adapter 取数；无 LLM key / 显式关闭 LLM 时走规则兜底；Agnes AI 真实 LLM 回归 9/10（`G-003` 未命中 `nail art drill`，未放宽 golden）；Streamlit Cloud 单进程入口已上线
 - 启动：`.\run.ps1`（API :8000 + UI :8501）；在线 Demo <https://amz-ops-agent-g9pckbqru2xenyystgiaas.streamlit.app/>（入口 `app/streamlit_cloud.py`，local 模式）
-- 上次验证（2026-11-24）：显式关闭 LLM 时 `-m evals.run_eval` → 10/10（`llm_calls=0`）；真实 LLM `--require-llm` → 9/10（`llm_calls=30`、`cost=$0.004921`）；`CREATIVE_VERIFY_OK`；`OPS_VERIFY_OK`；`LOCAL_BACKEND_OK`；两入口 `UI_VERIFY_OK`（tabs=8）；`smoke_test` → `current_issues=2`、creative 5 素材、5 条 dry-run；`compileall` 退出 0；线上 E2E Reboot 后美工审核与 5 条 dry-run 通过
+- 上次验证（2026-11-24）：显式关闭 LLM 时 `-m evals.run_eval` → 10/10（`llm_calls=0`）；真实 LLM `--require-llm` → 9/10（`llm_calls=30`、`cost=$0.004921`）；`ADAPTERS_VERIFY_OK`；`CREATIVE_VERIFY_OK`；`OPS_VERIFY_OK`；`LOCAL_BACKEND_OK`；`UI_VERIFY_OK`（tabs=8）；`smoke_test` → adapters mock、creative 5 素材、5 条 dry-run；`compileall` 退出 0；本地浏览器 E2E 通过（侧栏 adapter caption、8 tabs、审批后 5 条 dry-run）
 - 最近决策：真实 LLM 使用 Agnes AI OpenAI 兼容端点 + 成本封顶 + 429 退避（`T-005`）；中文 UI + 纸白/墨色/黄铜改版（`SPEC-004`）；HITL checkpoint 用官方 `SqliteSaver`（`ADR-002`）；种子改真实公开数据（`ADR-003`，`T-009`）；免费部署走 Streamlit Community Cloud（`T-007`）
-- 下一步：T-012 SP-API/Ads adapter 接口 + mock
+- 下一步：T-012 已提交并本地验证；线上 Reboot 后复验侧栏 adapter caption 与 8 tabs。之后无待批功能（可选：独立裁判、缩短 URL、固定 Python 3.11）
 - 未决问题：Render 免费服务创建仍要求绑卡；Hugging Face 免费账号只能建 Static Space，Docker/Gradio 需 PRO；Zeabur 公告 2026/12/31 停止运营
 
 ## 当前迭代
-T-011 已完成：美工 5 素材位 brief、确定性 rubric、可插拔创意 provider（默认 mock，不调图像模型）；审批闸门与 5 条 dry-run 保持不变。
+T-012 已完成：只读 SP-API / Ads API adapter 与 mock，节点经 `Services.adapters` 取目录/库存/Listing/广告数据；默认 `ADAPTER_MODE=mock`，真实 API 未接入；审批闸门与 5 条 dry-run 保持不变。
 
 ## 进行中
 | ID | 任务 | 开始时间 |
@@ -24,7 +24,7 @@ T-011 已完成：美工 5 素材位 brief、确定性 rubric、可插拔创意 
 ## 待办（按依赖排序）
 | ID | 任务 | 依赖 | 预估轮数 |
 |---|---|---|---|
-| T-012 | SP-API / Ads API adapter 接口 + mock | T-011 | 2 |
+| - | 无（用户已批准的 JD 补强顺序已全部完成） | - | - |
 
 ## 已完成
 | ID | 任务 | 提交 | 验证证据 |
@@ -41,6 +41,7 @@ T-011 已完成：美工 5 素材位 brief、确定性 rubric、可插拔创意 
 | T-009 | 真实公开数据替换合成种子 | `acd1806` | 5 SKU / 250 条真实评论 / 20 条真实历史 Listing；fallback eval 10/10；真实 LLM 9/10；smoke / local backend / UI / compileall 通过 |
 | T-010 | 运营广度 P0：选品 / 补货 / 预算定价 / ROI | `a4f26b2` | `OPS_VERIFY_OK`；API `/opportunities` + `state.ops_plan`；UI tabs=7 与 ROI 浏览器实测；5 条 dry-run 不变 |
 | T-011 | 美工 AIGC：brief / rubric / 可插拔 provider | `3fe7699` | `CREATIVE_VERIFY_OK`；UI tabs=8；负向对照 `Best Seller` 被 block；5 条 dry-run 不变 |
+| T-012 | SP-API / Ads API adapter 接口 + mock | 待填 | `ADAPTERS_VERIFY_OK`；`/health` adapter 摘要；本地浏览器 E2E（侧栏 caption、8 tabs、5 条 dry-run）；eval 10/10；`compileall` 通过 |
 
 ## 阻塞 / 待决策
 | 问题 | 需要谁决定 | 影响范围 |
@@ -50,6 +51,6 @@ T-011 已完成：美工 5 素材位 brief、确定性 rubric、可插拔创意 
 | 是否需要多 worker（改用 Postgres checkpoint） | 用户 | 部署形态 |
 
 ## 交接
-- 上次停在哪：T-011 已完成；链路在合规后增加美工 brief/rubric（默认 mock，不调图像模型），审批闸门与 5 条 dry-run 未变；真实 LLM 回归仍为 9/10（`G-003` 原样记录）。
-- 下一步：T-012 SP-API / Ads API adapter 接口 + mock。
+- 上次停在哪：T-012 已完成；目录/库存/Listing/广告改走只读 adapter，默认 mock；审批闸门与 5 条 dry-run 未变；真实 LLM 回归仍为 9/10（`G-003` 原样记录）。
+- 下一步：线上 Reboot 后复验 T-012 的侧栏 adapter caption 与 8 tabs；之后无待批功能。
 - 不要重复的尝试 / 已否决的方案：不接真实 SP-API / Ads API；不调用真实图像模型；不绕过审批；不把 mock 素材包装成已生成图片；不把 demo 包装成生产系统；不自写 checkpoint saver；不为通过测试放宽 golden 判定；不在 Render / Hugging Face 上继续尝试需要绑卡或付费的方案。

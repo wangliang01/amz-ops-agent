@@ -1,5 +1,5 @@
 # amz-ops-agent
-Amazon 卖家多智能体运营副驾驶演示：洞察 → Listing → 合规 → 美工 → 广告 → 补货/预算 → 人工审批 → dry-run。公开评论数据（品牌匿名）+ 模拟广告/库存/成本 + mock 美工 provider，不接真实店铺。
+Amazon 卖家多智能体运营副驾驶演示：洞察 → Listing → 合规 → 美工 → 广告 → 补货/预算 → 人工审批 → dry-run。公开评论数据（品牌匿名）+ 模拟广告/库存/成本 + mock 美工 provider + 只读 SP-API/Ads mock，不接真实店铺。
 
 ## 背景入口
 - `SPEC.md`：范围 / Non-goals / 验收；`PROGRESS.md`：当前状态 / 下一步

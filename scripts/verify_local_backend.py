@@ -19,6 +19,8 @@ def main() -> int:
     health = backend.health()
     skus = backend.list_skus()
     assert health["ok"] is True, health
+    assert health["adapters"]["mode"] == "mock", health
+    assert health["adapters"]["read_only"] is True, health
     assert len(skus) == 5, len(skus)
 
     snapshot = backend.create_run({"sku_id": "SKU-003", "mode": "full_chain"})
@@ -48,7 +50,7 @@ def main() -> int:
     print(
         "LOCAL_BACKEND_OK "
         f"skus={len(skus)} awaiting_approval=ok creative=5_mock "
-        f"approve=5_dry_run audit={len(audit)}"
+        f"adapters=mock approve=5_dry_run audit={len(audit)}"
     )
     return 0
 

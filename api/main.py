@@ -82,6 +82,7 @@ def health() -> dict[str, Any]:
         "ok": True,
         "llm_enabled": bool(services and services.llm.enabled),
         "vector_index": bool(services and services.retriever.chroma),
+        "adapters": services.adapters.describe() if services else {},
     }
 
 
@@ -110,7 +111,7 @@ def create_run(payload: RunRequest) -> dict[str, Any]:
     if payload.mode not in {"full_chain", "listing_only", "ads_only", "auto"}:
         raise HTTPException(status_code=400, detail="invalid mode")
     try:
-        services.store.sku(payload.sku_id)
+        services.adapters.sp_api.get_catalog_item(payload.sku_id)
     except KeyError as exc:
         raise HTTPException(
             status_code=404, detail=f"unknown sku: {payload.sku_id}"

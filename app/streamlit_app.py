@@ -931,6 +931,11 @@ def render_sidebar(snapshot: dict[str, Any] | None, metrics: dict[str, Any]) -> 
                 st.session_state["api_base"] = base_input.rstrip("/")
                 st.caption("默认 http://localhost:8000")
 
+        adapter_mode = os.getenv("ADAPTER_MODE", "mock").strip().lower() or "mock"
+        st.caption(
+            f"数据适配器：SP-API {adapter_mode} · Ads API {adapter_mode}（只读）"
+        )
+
         skus, error = load_skus(api_base())
         st.session_state["api_error"] = bool(error)
 

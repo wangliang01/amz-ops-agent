@@ -33,6 +33,8 @@ def check_plans(store) -> None:
     for sku in store.skus.values():
         plan = build_ops_plan(store, sku)
         assert plan["simulated"] is True, plan
+        assert plan["adapter_mode"] == "mock", plan
+        assert plan["adapter_sources"]["read_only"] is True, plan
         inventory = plan["inventory"]
         assert inventory["reorder_point"] >= 0, inventory
         assert inventory["reorder_qty"] >= 0, inventory

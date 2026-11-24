@@ -74,6 +74,7 @@ class LocalBackend:
                 "ok": True,
                 "llm_enabled": bool(self.services.llm.enabled),
                 "vector_index": bool(self.services.retriever.chroma),
+                "adapters": self.services.adapters.describe(),
             }
 
     def list_skus(self) -> list[dict[str, Any]]:
@@ -111,7 +112,7 @@ class LocalBackend:
             self._ensure()
             assert self.services is not None and self.graph is not None
             try:
-                self.services.store.sku(sku_id)
+                self.services.adapters.sp_api.get_catalog_item(sku_id)
             except KeyError as exc:
                 raise KeyError(f"unknown sku: {sku_id}") from exc
 
