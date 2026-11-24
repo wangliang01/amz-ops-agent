@@ -12,6 +12,7 @@ data/*.sqlite-*
 .streamlit/
 .pytest_cache/
 evals/report.json
+evals/llm_report.json
 .scratch/ui/
 .scratch/decisions.tsv
 .DS_Store

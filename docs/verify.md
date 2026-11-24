@@ -28,8 +28,10 @@ $env:LLM_ENABLED="false"; $env:EMBEDDING_ENABLED="false"
 G-001    SKU-001  PASS    -
 ...
 G-010    SKU-005  PASS    -
-10/10 passed (100.0%). Report: ...\evals\report.json
+10/10 passed (100.0%); llm_calls=0, tokens=0, cost=$0.000000. Report: ...\evals\report.json
 ```
+
+无 key 时这是**兜底回归**（`llm_calls=0`），不能证明真实 LLM 路径；真实调用见 §3.4。有 key 且未加 `--require-llm` 时，默认评测会实际调用 LLM，报告落到 `evals/llm_report.json`；无 key 时落 `evals/report.json`。
 
 `scripts.smoke_test` 期望（2026-11-23 实测，节选）：
 
@@ -119,6 +121,61 @@ errors: []
 - checkpoint 库含 `checkpoints` 表。
 
 默认 API 使用 `data/checkpoints.sqlite`；该文件及 `-wal` / `-shm` 已被 `.gitignore` 的 `data/*.sqlite*` 覆盖。
+
+### 3.4 真实 LLM 回归（需 key）
+
+默认评测在无 key 时走规则兜底，`llm_calls=0`，只能证明兜底路径。真实 LLM 回归必须显式开启。
+
+1. 在 `.env` 中配置（不要把 key 提交或贴到聊天里）：
+
+```dotenv
+LLM_ENABLED=true
+OPENAI_API_KEY=...
+# 端点不支持 embeddings 时：
+EMBEDDING_ENABLED=false
+```
+
+2. 单 case 连通性（几分钱）：
+
+```powershell
+.\.venv\Scripts\python.exe -m evals.run_eval --require-llm --case G-001 --max-cost-usd 0.10
+```
+
+期望：退出码 0，`1/1 passed`；`evals/llm_report.json` 中 `mode="llm"`、`model` 非空、`llm_calls >= 3`、`tokens.total > 0`、`cost_usd > 0`。
+
+3. 全量：
+
+```powershell
+.\.venv\Scripts\python.exe -m evals.run_eval --require-llm --max-cost-usd 0.50
+```
+
+期望：退出码 0（全过）或 1（有结构性失败，`failures` 列原因）。真实模型输出非确定，失败是回归证据，不要为了全绿去改 prompt。
+
+4. 无 key 时 `--require-llm` 必须失败：
+
+```powershell
+$env:LLM_ENABLED="false"; .\.venv\Scripts\python.exe -m evals.run_eval --require-llm
+# 期望：退出码 2，提示 OPENAI_API_KEY，不执行任何 case
+```
+
+5. 成本闸门：
+
+```powershell
+.\.venv\Scripts\python.exe -m evals.run_eval --require-llm --max-cost-usd 0.0001
+# 期望：退出码 3，报告 aborted="cost_cap"，results 只含已执行 case
+# 无 key 时该命令会先触发退出 2，而不是 3。
+```
+
+报告字段：`mode`、`model`、`require_llm`、`cases`、`passed`、`failed`、`pass_rate`、`llm_calls`、`tokens{prompt,completion,total}`、`cost_usd`、`duration_sec`、`aborted`、`results[]`（每 case 含 `llm_calls` / `tokens` / `cost_usd` / `latency_sec` / `failures`）。`mode` 按实际调用判定：`llm_calls > 0` 才是 `llm`，否则 `fallback`。
+
+`--limit N` 只跑前 N 条；`--report PATH` 指定报告位置。若 provider 不返回 usage 元数据，会出现 `llm_calls > 0` 但 `tokens.total=0`、`cost_usd=0`，此时 AC-2 视为未达成，换支持 usage 的端点或模型。
+
+`evals/report.json` 与 `evals/llm_report.json` 都被 gitignore；报告不含 key、完整 prompt 或完整响应。确定性检查：
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.verify_llm_eval
+# 期望：LLM_EVAL_VERIFY_OK
+```
 
 ## 4. UI 验收（有界面时必填）
 
