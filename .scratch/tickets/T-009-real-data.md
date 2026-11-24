@@ -1,6 +1,6 @@
 # [T-009] 真实公开数据替换合成种子
 
-- **Status**: In Progress
+- **Status**: Done
 - **Depends On**: T-008
 - **对应 SPEC**: `SPEC.md` 的演示边界（2026-11-24 用户批准的例外）
 - **预估轮数**: 3
@@ -50,4 +50,4 @@
 - `UI_VERIFY_OK tabs=6 awaiting_approval=ok approve=5_dry_run reject=1_skip errors=0`（`app/streamlit_app.py` 与 `app/streamlit_cloud.py` 两个入口各一次）。
 - `compileall -q agent api app core rag evals scripts data` 退出 0。
 - 边缘情况：SKU-003 当前 Listing 命中的两条真实 warn 是 description `Guarantee` 与 bullet `medical grade`；`Made in USA` 已保留在 current bullets，但现有规则 `made\s+in\s+the?\s*usa` 不会匹配该写法，因此未计入 `current_issues`。规则文件属手写配置，本 Ticket 未改 `data/seed/**`。
-- 提交：见 `PROGRESS.md`。
+- 提交：`acd1806`。

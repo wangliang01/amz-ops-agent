@@ -1,6 +1,6 @@
 # [T-008] 重做品牌 mark 与 favicon
 
-- **Status**: In Progress
+- **Status**: Done
 - **Depends On**: T-004
 - **对应 SPEC**: `SPEC-004-ui-redesign.md`（纸白 / 墨色 / 黄铜；扁平、单色、无渐变）
 - **预估轮数**: 1
@@ -38,4 +38,4 @@
 - 浏览器实测（ego-browser，1440 / 390）：页头 `.brand-mark` 计算尺寸 `20×20`、knob `r=2.2` / `#9C631C`；侧栏 18px；`innerWidth == documentElement.scrollWidth`（1440/1440、390/390），无横向滚动；favicon 由 `/media/...png` 正常加载。
 - 截图：`.scratch/ui/T-008/brand-1440.png`、`.scratch/ui/T-008/brand-390.png`。
 - `compileall -q agent api app core rag evals scripts data` 退出 0。
-- 提交：见 `PROGRESS.md`。
+- 提交：`98fb544`。
