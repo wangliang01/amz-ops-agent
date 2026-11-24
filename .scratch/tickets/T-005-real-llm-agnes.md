@@ -36,7 +36,7 @@ T-003 的确定性路径已验，但真实 provider 未接入。本轮使用 Agn
 
 ## 完成记录
 
-- 提交：待提交
+- 提交：`0a6a598`
 - 证据（2026-11-24 实测）：
   - 单 case：`1/1 passed (100.0%); llm_calls=3, tokens=4001, cost=$0.000319`。
   - 全量：早期 `10/10 passed (100.0%); llm_calls=30, tokens=44620, cost=$0.003866`；裁判发现最后一次带配置默认 eval 因真实模型输出 `G-008 compliance blocked` 得到 `9/10`、退出 1；随后在当前代码与配置下重跑显式真实全量回归，结果 `10/10 passed (100.0%); llm_calls=30, tokens=43917, cost=$0.003788`、退出 0；当前 `evals/llm_report.json` 为这次 10/10 通过报告。
