@@ -201,8 +201,8 @@ a:focus-visible {
 
 /* Brand */
 .side-brand { display: flex; align-items: center; gap: 10px; padding: 4px 0 2px; }
-.side-brand-name { font-size: 17px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
 .side-brand .brand-mark { width: 18px; height: 18px; flex-basis: 18px; }
+.side-brand-name { font-size: 17px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
 .brand-mark {
   width: 20px; height: 20px; display: block; flex: 0 0 20px;
   color: var(--ink);
@@ -822,7 +822,7 @@ def render_header() -> None:
             </div>
             <p class="lede">把评论痛点变成合规的 Listing 草稿和广告出价方案。人工闸门之前，不执行任何动作。</p>
           </div>
-          <div class="demo-tag">合成数据 · dry-run 演示</div>
+          <div class="demo-tag">真实评论样本 · 广告模拟 · dry-run</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -905,7 +905,7 @@ def render_sidebar(snapshot: dict[str, Any] | None, metrics: dict[str, Any]) -> 
             '<span class="side-brand-name">amz-ops-agent</span></div>',
             unsafe_allow_html=True,
         )
-        st.markdown('<div class="side-note">运营副驾驶 · 合成数据</div>', unsafe_allow_html=True)
+        st.markdown('<div class="side-note">运营副驾驶 · 真实评论样本</div>', unsafe_allow_html=True)
         st.markdown('<div class="side-rule"></div>', unsafe_allow_html=True)
 
         if is_local():
@@ -990,7 +990,7 @@ def render_sidebar(snapshot: dict[str, Any] | None, metrics: dict[str, Any]) -> 
         st.markdown('<div class="side-section-label">审批闸门</div>', unsafe_allow_html=True)
         render_gate_panel(snapshot, metrics)
         st.markdown(
-            '<div class="side-foot">合成数据 · 仅 dry-run<br>不写真实店铺</div>',
+            '<div class="side-foot">公开评论样本 · 广告模拟<br>仅 dry-run，不写真实店铺</div>',
             unsafe_allow_html=True,
         )
 
@@ -1019,7 +1019,7 @@ def render_empty_state() -> None:
               <li><strong>拒绝</strong><span>执行器只记录一次跳过，不产生 dry-run。</span></li>
               <li><strong>重复批准</strong><span>幂等，不会重复写审计。</span></li>
             </ul>
-            <p class="panel-note">合成数据 · 仅 dry-run，不写真实店铺。</p>
+            <p class="panel-note">真实评论样本（品牌匿名）· 广告为模拟 · 仅 dry-run，不写真实店铺。</p>
           </div>
         </div>
         """,
@@ -1289,6 +1289,7 @@ def render_ads(ads: dict[str, Any]) -> None:
     if diagnosis == FALLBACK_DIAGNOSIS:
         diagnosis = "规则诊断：高 ACOS 关键词在消耗预算，但没有带来相应销售。"
     st.markdown(f'<div class="lead">{e(diagnosis or "暂无广告诊断。")}</div>', unsafe_allow_html=True)
+    st.caption("广告花费、点击与关键词为模拟数据；评论与商品信息来自真实公开数据。")
 
     st.markdown('<div class="section-title">30 天表现</div>', unsafe_allow_html=True)
     perf_rows = [
@@ -1574,7 +1575,7 @@ def render_metrics(metrics: dict[str, Any]) -> None:
     with st.expander("5 分钟演示脚本"):
         st.markdown(
             """
-            1. 选择 `SKU-003`（低评分、高 ACOS）。
+            1. 选择 `SKU-003`（3.4 星；真实 Listing 带 warn 级宣称）。
             2. 运行流水线，打开「洞察」：痛点是真实评论引用。
             3. 打开「Listing」：新草稿引用了历史高转化 Listing。
             4. 打开「合规」：当前 Listing 有问题，新草稿通过。

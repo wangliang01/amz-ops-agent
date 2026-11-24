@@ -1,14 +1,16 @@
-"""Generate deterministic synthetic seed data for the amz-ops-agent demo.
+"""Synthetic fallback seed generator for the amz-ops-agent demo.
 
-Everything under data/seed is synthetic. No real Amazon listings, reviews,
-sellers, or brands are used. The schema mirrors the shape of SP-API / Ads API
-payloads so the mock layer can later be swapped for real clients.
+The canonical seed is now built from the public Amazon Reviews 2023 dataset by
+`data/fetch_real_seed.py`. This module is kept as a deterministic offline
+fallback: it refuses to overwrite a real-data seed unless `--force-synthetic`
+is passed explicitly.
 """
 from __future__ import annotations
 
 import csv
 import json
 import random
+import sys
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -848,7 +850,14 @@ def align_ad_keywords(
     return ad_keywords
 
 
-def main() -> None:
+def main() -> int:
+    if (SEED / ".real_data").exists() and "--force-synthetic" not in sys.argv:
+        print(
+            "data/seed was built from real public data (see data/seed/PROVENANCE.md).\n"
+            "Refusing to overwrite it with synthetic data. Run data/fetch_real_seed.py "
+            "to rebuild, or pass --force-synthetic to replace it on purpose."
+        )
+        return 2
     SEED.mkdir(parents=True, exist_ok=True)
     POLICIES.mkdir(parents=True, exist_ok=True)
 
@@ -903,7 +912,8 @@ def main() -> None:
     print(f"  ad keywords: {len(all_ad_keywords)}")
     print(f"  compliance rules: {len(COMPLIANCE_RULES)}")
     print(f"  policies: {len(POLICY_FILES)}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -52,7 +52,7 @@ MODEL_PRICE_OUTPUT = "0.15"
 
 - App 空闲后会休眠，首次访问需要冷启动。
 - 文件系统是临时的：`data/runs.sqlite`、`data/checkpoints.sqlite` 在重启 / 重新部署后清空；`data/seed/` 来自仓库，不受影响。
-- 演示台没有鉴权、限流或多租户隔离；只使用合成数据，`executor` 只做 dry-run。
+- 演示台没有鉴权、限流或多租户隔离；评论与商品为公开数据样本（品牌匿名），广告为模拟，`executor` 只做 dry-run。
 - 如果需要保留审批与审计记录，后续应把 SQLite 换成托管数据库，并加访问控制。
 
 ## 本地验证

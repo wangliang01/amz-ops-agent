@@ -13,8 +13,22 @@ PAIN_PATTERNS = {
     "noise": ["loud", "noise", "wakes"],
     "blending power": ["ice", "chunk", "blend", "motor", "weak"],
     "durability": ["broke", "broken", "crack", "stopped working", "falling apart"],
-    "size/fit": ["small", "size", "capacity", "fit"],
+    "size/fit": ["small", "size", "capacity", "fit", "nozzle", "attachment"],
     "quality": ["cheap", "flimsy", "quality", "scratched"],
+    "irritation": ["irritat", "rash", "burn", "itch", "allergic", "redness"],
+    "adhesion": ["stick", "adhesive", "peel", "fall off", "slip", "slide"],
+    "no results": [
+        "didn't work",
+        "doesn't work",
+        "did not work",
+        "no difference",
+        "no results",
+        "waste of money",
+        "useless",
+    ],
+    "smell": ["smell", "scent", "odor"],
+    "packaging": ["packaging", "bottle", "pump", "damaged"],
+    "value": ["price", "expensive", "waste", "not worth"],
 }
 
 POSITIVE_PATTERNS = {
@@ -22,6 +36,7 @@ POSITIVE_PATTERNS = {
     "ease of use": ["easy", "simple", "quick", "one button"],
     "value": ["value", "price", "worth", "quality"],
     "performance": ["works", "great", "perfect", "good"],
+    "results": ["worked", "result", "smooth", "soft", "stronger"],
 }
 
 

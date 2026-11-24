@@ -54,7 +54,7 @@ gh run watch
 
 ## 安全提醒
 
-当前配置按“公开演示”使用：服务没有鉴权、限流或多租户隔离。项目只使用合成数据，`executor` 只做 dry-run，但仍建议：
+当前配置按“公开演示”使用：服务没有鉴权、限流或多租户隔离。项目使用公开评论数据（品牌匿名）与模拟广告，`executor` 只做 dry-run，但仍建议：
 
 - 只是展示界面时，把 API 的 `LLM_ENABLED` 设为 `false`，或不要在 Render 填 `OPENAI_API_KEY`；
 - 需要真实 LLM 时，在 Render 前面加访问控制（反向代理 / Basic Auth / Cloudflare Access）；

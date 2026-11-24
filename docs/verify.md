@@ -16,6 +16,18 @@
 
 ## 2. 测试 / 评测
 
+种子数据已随仓库提供。需要从公开数据集重建时（约 540MB 下载，固定快照 + sha256）：
+
+```powershell
+.\.venv\Scripts\python.exe data\fetch_real_seed.py
+# 期望：cache hit ... / Wrote real-data seed ...
+#       SKUs: 5 / reviews: 250 / historical listings: 20 / ads daily rows: 450
+```
+
+`data/seed/PROVENANCE.md` 列明真实字段、模拟字段、匿名化与许可。
+
+评测与冒烟：
+
 ```powershell
 $env:LLM_ENABLED="false"; $env:EMBEDDING_ENABLED="false"
 .\.venv\Scripts\python.exe -m evals.run_eval
@@ -29,7 +41,7 @@ $env:LLM_ENABLED="false"; $env:EMBEDDING_ENABLED="false"
 LOCAL_BACKEND_OK skus=5 awaiting_approval=ok approve=5_dry_run audit=6
 ```
 
-`evals.run_eval` 期望（2026-11-23 实测）：
+`evals.run_eval` 期望（2026-11-24 实测）：
 
 ```
 G-001    SKU-001  PASS    -
@@ -40,16 +52,18 @@ G-010    SKU-005  PASS    -
 
 无 key 时这是**兜底回归**（`llm_calls=0`），不能证明真实 LLM 路径；真实调用见 §3.4。有 key 且未加 `--require-llm` 时，默认评测会实际调用 LLM，报告落到 `evals/llm_report.json`，模型非确定性失败会以退出 1 呈现；无 key 时落 `evals/report.json`。要稳定复验兜底路径，请显式设置 `LLM_ENABLED=false; EMBEDDING_ENABLED=false`。
 
-`scripts.smoke_test` 期望（2026-11-23 实测，节选）：
+`scripts.smoke_test` 期望（2026-11-24 实测，节选）：
 
 ```json
 {
   "errors": [],
-  "compliance": {"passed": true, "score": 100, "draft_issues": 0, "current_issues": 6, "fixed_count": 6},
+  "compliance": {"passed": true, "score": 100, "draft_issues": 0, "current_issues": 2, "fixed_count": 2},
   "execution_actions": 5,
   "metrics": {"llm_calls": 0}
 }
 ```
+
+`current_issues=2` 是 SKU-003 真实 Listing 命中的两条 warn：description 的 `Guarantee` 与 bullet 的 `medical grade`；草稿基线已清零。
 
 **注意**：必须用 `-m`。直接跑 `python scripts\smoke_test.py` 会 `ModuleNotFoundError: No module named 'agent'`。
 
@@ -97,7 +111,7 @@ curl.exe -s -X POST http://127.0.0.1:8000/runs/<run_id>/approve -H "Content-Type
 
 打开 <http://localhost:8501>：
 
-1. 侧栏选 `SKU-003` + `full_chain`，点 **运行流水线**。
+1. 侧栏选 `SKU-003`（真实颈膜商品，3.4 星）+ `full_chain`，点 **运行流水线**。
 2. 期望：状态 `等待审批`；主区出现 洞察 / Listing / 合规 / 广告 / 审计 / 指标 六个 tab。
 3. 侧栏点 **批准并执行 dry-run**。期望：状态 `已完成`；`审计` 出现 5 条 dry-run 记录；`指标` 显示 `模型调用: 0`（无 LLM 时）。
 4. 停掉 API 再刷新。期望：侧栏 `API 不可达` + 启动命令，不白屏。
@@ -179,7 +193,9 @@ LLM_CASE_DELAY_SEC=40
 .\.venv\Scripts\python.exe -m evals.run_eval --require-llm --max-cost-usd 0.50
 ```
 
-期望：退出码 0（全过）或 1（有结构性失败，`failures` 列原因）。真实模型输出非确定，失败是回归证据，不要为了全绿去改 prompt。免费 / 低 RPM 端点如出现 429，优先增大 `LLM_CASE_DELAY_SEC` 或升级 provider 套餐；不会通过放宽 AC 来“过测”。
+期望：退出码 0（全过）或 1（有结构性失败，`failures` 列原因）。真实模型输出非确定，失败是回归证据，不要为了全绿去改 prompt。
+
+2026-11-24 真实数据实测：9/10，`llm_calls=30`、`tokens.total=63173`、`cost=$0.004921`；`G-003` 失败原因为 `missing: nail art drill`，未放宽 golden。免费 / 低 RPM 端点如出现 429，优先增大 `LLM_CASE_DELAY_SEC` 或升级 provider 套餐；不会通过放宽 AC 来“过测”。
 
 4. 无 key 时 `--require-llm` 必须失败：
 

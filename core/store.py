@@ -10,7 +10,7 @@ from core.config import Settings, settings as default_settings
 
 
 class SeedStore:
-    """Read-only access to the synthetic seed dataset."""
+    """Read-only access to the seed dataset (real public reviews + simulated ads)."""
 
     def __init__(self, cfg: Settings = default_settings):
         self.cfg = cfg

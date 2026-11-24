@@ -1,5 +1,5 @@
 # amz-ops-agent
-Amazon 卖家多智能体运营副驾驶演示：洞察 → Listing → 合规 → 广告 → 人工审批 → dry-run。合成数据，不接真实店铺。
+Amazon 卖家多智能体运营副驾驶演示：洞察 → Listing → 合规 → 广告 → 人工审批 → dry-run。公开评论数据（品牌匿名）+ 模拟广告，不接真实店铺。
 
 ## 背景入口
 - `SPEC.md`：范围 / Non-goals / 验收；`PROGRESS.md`：当前状态 / 下一步
@@ -32,7 +32,7 @@ Amazon 卖家多智能体运营副驾驶演示：洞察 → Listing → 合规 �
 ## 红线
 - NEVER 提交 `.env` / key / 凭据；只提交 `.env.example`。
 - `executor` 只能 dry-run：NEVER 删除 `interrupt_before` 或增加真实店铺写接口。
-- `data/seed/**` 只读；改数据只改 `data/generate_seed.py` 后重新生成。
+- `data/seed/**` 只读；改数据只改 `data/fetch_real_seed.py` 后重新生成；`data/generate_seed.py` 仅作合成兜底，不得覆盖真实种子。
 - 合规 `block` / `warn` 语义改动必须同步 golden eval。
 - 不新增依赖，除非明确同意；NEVER 未经确认 `push --force` / `reset --hard` / 删数据。
 

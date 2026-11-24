@@ -5,6 +5,7 @@ __pycache__/
 .env.*
 !.env.example
 data/chroma/
+data/cache/
 data/*.sqlite
 data/*.sqlite-*
 *.sqlite

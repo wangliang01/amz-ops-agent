@@ -1,10 +1,10 @@
-{"case_id": "G-001", "sku_id": "SKU-001", "must_include": ["french press"], "forbidden": ["best seller", "100%", "fda approved"], "max_title_len": 200, "bullets": 5}
-{"case_id": "G-002", "sku_id": "SKU-001", "must_include": ["insulated"], "forbidden": ["amazon's choice", "guaranteed", "#1"], "max_title_len": 200, "bullets": 5}
-{"case_id": "G-003", "sku_id": "SKU-002", "must_include": ["silicone baking mat"], "forbidden": ["best seller", "100%", "lifetime warranty"], "max_title_len": 200, "bullets": 5}
-{"case_id": "G-004", "sku_id": "SKU-002", "must_include": ["non-stick"], "forbidden": ["fda approved", "eco-friendly", "guaranteed"], "max_title_len": 200, "bullets": 5}
-{"case_id": "G-005", "sku_id": "SKU-003", "must_include": ["portable blender"], "forbidden": ["best seller", "100%", "eco-friendly"], "max_title_len": 200, "bullets": 5}
-{"case_id": "G-006", "sku_id": "SKU-003", "must_include": ["smoothies"], "forbidden": ["amazon's choice", "fda approved", "guaranteed"], "max_title_len": 200, "bullets": 5}
-{"case_id": "G-007", "sku_id": "SKU-004", "must_include": ["bamboo cutting board"], "forbidden": ["best seller", "100%", "made in usa"], "max_title_len": 200, "bullets": 5}
-{"case_id": "G-008", "sku_id": "SKU-004", "must_include": ["juice groove"], "forbidden": ["fda approved", "lifetime warranty", "guaranteed"], "max_title_len": 200, "bullets": 5}
-{"case_id": "G-009", "sku_id": "SKU-005", "must_include": ["reusable storage bags"], "forbidden": ["best seller", "100%", "fda approved"], "max_title_len": 200, "bullets": 5}
-{"case_id": "G-010", "sku_id": "SKU-005", "must_include": ["leakproof"], "forbidden": ["amazon's choice", "guaranteed", "non-toxic"], "max_title_len": 200, "bullets": 5}
+{"case_id": "G-001", "sku_id": "SKU-001", "must_include": ["hair diffuser"], "forbidden": ["best seller", "100%", "fda approved"], "max_title_len": 200, "bullets": 5}
+{"case_id": "G-002", "sku_id": "SKU-001", "must_include": ["collapsible"], "forbidden": ["amazon's choice", "guaranteed", "#1"], "max_title_len": 200, "bullets": 5}
+{"case_id": "G-003", "sku_id": "SKU-002", "must_include": ["nail art drill"], "forbidden": ["best seller", "100%", "lifetime warranty"], "max_title_len": 200, "bullets": 5}
+{"case_id": "G-004", "sku_id": "SKU-002", "must_include": ["electric file"], "forbidden": ["fda approved", "eco-friendly", "guaranteed"], "max_title_len": 200, "bullets": 5}
+{"case_id": "G-005", "sku_id": "SKU-003", "must_include": ["neck lift"], "forbidden": ["best seller", "100%", "eco-friendly"], "max_title_len": 200, "bullets": 5}
+{"case_id": "G-006", "sku_id": "SKU-003", "must_include": ["instant"], "forbidden": ["amazon's choice", "fda approved", "guaranteed"], "max_title_len": 200, "bullets": 5}
+{"case_id": "G-007", "sku_id": "SKU-004", "must_include": ["hair trimmer"], "forbidden": ["best seller", "100%", "made in usa"], "max_title_len": 200, "bullets": 5}
+{"case_id": "G-008", "sku_id": "SKU-004", "must_include": ["cordless"], "forbidden": ["fda approved", "lifetime warranty", "medical grade"], "max_title_len": 200, "bullets": 5}
+{"case_id": "G-009", "sku_id": "SKU-005", "must_include": ["nail strengthener"], "forbidden": ["best seller", "100%", "fda approved"], "max_title_len": 200, "bullets": 5}
+{"case_id": "G-010", "sku_id": "SKU-005", "must_include": ["ceramide"], "forbidden": ["amazon's choice", "guaranteed", "non-toxic"], "max_title_len": 200, "bullets": 5}

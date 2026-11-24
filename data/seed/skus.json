@@ -1,242 +1,265 @@
 [
   {
     "sku_id": "SKU-001",
-    "asin": "B0DEMO001",
-    "brand": "NordicHome",
-    "title": "NordicHome Double-Wall Stainless Steel French Press, 34 oz Insulated Coffee Maker with 4-Level Filtration",
-    "category": "Kitchen & Dining",
-    "subcategory": "Coffee Makers",
+    "asin": "B019GBG0IE",
+    "brand": "Brand A",
+    "title": "Collapsible Hair Diffuser by Brand A",
+    "category": "Beauty & Personal Care",
+    "subcategory": "Hair Tools",
     "marketplace": "US",
-    "price": 32.99,
-    "cost": 11.5,
+    "price": 16.99,
+    "cost": 6.8,
     "stock": 180,
-    "rating": 4.4,
-    "review_count": 1280,
+    "rating": 4.1,
+    "review_count": 5312,
     "target_acos": 0.3,
     "current_bid": 0.85,
     "attributes": [
-      "34 oz",
-      "double-wall insulation",
-      "4-level filtration",
-      "18/10 stainless steel"
+      "Silicone",
+      "Collapsible",
+      "For curly hair",
+      "Fits most hair dryers",
+      "Black"
     ],
     "benefits": [
-      "keeps coffee hot for hours",
-      "clean cup without grit",
-      "brews four cups at once",
-      "rust-resistant and dishwasher safe"
+      "maintain your natural texture while you blow away the frizz",
+      "constructed to adapt to almost any model of hair dryer",
+      "collapses flat to fit in your drawer or bag",
+      "get a salon-quality diffuser at home and on the road"
     ],
     "bullets": [
-      "KEEPS COFFEE HOT LONGER: Double-wall vacuum insulation holds heat while the outer wall stays cool.",
-      "CLEAN CUP, NO GRIT: Four-level filtration uses two stainless steel screens and a spring-loaded plunger.",
-      "BREWS FOR A CROWD: 34 oz capacity makes four cups at once, ideal for sharing or a second round.",
-      "BUILT TO LAST: 18/10 stainless steel resists rust and is dishwasher safe.",
-      "SIMPLE FOUR-MINUTE BREW: Add coarse grounds, pour hot water, wait, and press."
+      "Maintain your natural texture while you blow away the frizz!",
+      "Constructed to adapt to almost any model of hair dryer!",
+      "Collapses flat to fit in your drawer or bag!",
+      "Get a salon-quality diffuser at home and on the road!",
+      "Flexible silicone construction fits most hair dryer attachments."
     ],
-    "description": "Brew a clean, full-bodied cup without paper filters. The double-wall body keeps coffee hot while the four-level filtration keeps grit out of the cup.",
-    "review_profile": "generic",
+    "description": "Whether you're trying to fit yet another styling necessity into a bathroom packed with beauty products, throwing your hair essentials into a duffel bag before spending a spontaneous weekend with your best friend or your best more-than-a-friend or grabbing your purse and running halfway around the world to places where just finding a place to plug your hairdryer in is an adventure, Brand A Collapsible travel diffuser is ready to go with you.",
     "current_listing": {
-      "title": "NordicHome Double-Wall Stainless Steel French Press, 34 oz Insulated Coffee Maker with 4-Level Filtration",
+      "title": "Collapsible Hair Diffuser by Brand A with Brand A Satisfaction Guarantee",
       "bullets": [
-        "KEEPS COFFEE HOT LONGER: Double-wall vacuum insulation holds heat while the outer wall stays cool.",
-        "CLEAN CUP, NO GRIT: Four-level filtration uses two stainless steel screens and a spring-loaded plunger.",
-        "BREWS FOR A CROWD: 34 oz capacity makes four cups at once, ideal for sharing or a second round.",
-        "BUILT TO LAST: 18/10 stainless steel resists rust and is dishwasher safe.",
-        "SIMPLE FOUR-MINUTE BREW: Add coarse grounds, pour hot water, wait, and press."
+        "Maintain your natural texture while you blow away the frizz!",
+        "Constructed to adapt to almost any model of hair dryer!",
+        "Collapses flat to fit in your drawer or bag!",
+        "Comes with the legendary Brand A Satisfaction Guarantee to make your purchase 100% worry-free!",
+        "Get a salon-quality diffuser at home and on the road!"
       ],
-      "description": "Brew a clean, full-bodied cup without paper filters. The double-wall body keeps coffee hot while the four-level filtration keeps grit out of the cup."
+      "description": "Whether you're trying to fit yet another styling necessity into a bathroom packed with beauty products, throwing your hair essentials into a duffel bag before spending a spontaneous weekend with your best friend or your best more-than-a-friend or grabbing your purse and running halfway around the world to places where just finding a place to plug your hairdryer in is an adventure, Brand A Collapsible travel diffuser is ready to go with you. The silicone construction is built to stretch and shrink to fit almost any hair dryer that accommodates attachments and the flexible material lets you collapse your diffuser into a flat, packable shape that slips easily into your bag or the corner of your overstuffed suitcase, so you'll always be able to carry the tools you need to keep your tresses smooth, springy and styled. Please note: Connection diameter: 2.25\" and diffuser diameter: 5.25\"."
+    },
+    "data_origin": {
+      "dataset": "Amazon Reviews 2023",
+      "parent_asin": "B019GBG0IE",
+      "note": "Real public product metadata; brand anonymized. Draft copy sanitized for prohibited claims."
     }
   },
   {
     "sku_id": "SKU-002",
-    "asin": "B0DEMO002",
-    "brand": "NordicHome",
-    "title": "NordicHome Silicone Baking Mat Set, 3-Piece Non-Stick Oven Liner for Cookies, Pastry and Roasting",
-    "category": "Kitchen & Dining",
-    "subcategory": "Bakeware",
+    "asin": "B07D1B499B",
+    "brand": "Brand B",
+    "title": "Brand B Nail Art Drill Treatments KIT Electric File Buffer Bits Acrylics 6 File Pedicure Hands & Nails Repair (110V US 1.5M Plug) - Pink",
+    "category": "Beauty & Personal Care",
+    "subcategory": "Nail Tools",
     "marketplace": "US",
-    "price": 24.99,
-    "cost": 7.8,
+    "price": 7.99,
+    "cost": 3.2,
     "stock": 240,
-    "rating": 4.5,
-    "review_count": 960,
+    "rating": 3.7,
+    "review_count": 2425,
     "target_acos": 0.28,
-    "current_bid": 0.7,
+    "current_bid": 1.05,
     "attributes": [
-      "3-piece set",
-      "food-grade silicone",
-      "non-stick",
-      "heat resistant to 450F"
+      "110V US plug",
+      "6 sanding bits",
+      "3,000-20,000 RPM",
+      "1.5 m cord",
+      "Pink"
     ],
     "benefits": [
-      "releases food without spray",
-      "replaces parchment paper",
-      "fits standard baking pans",
-      "easy to clean"
+      "great for any professional manicurist or beginner",
+      "travel size for the salon professional on the go",
+      "modern design looks great in any home or salon",
+      "light weight drill makes working all day easy to do"
     ],
     "bullets": [
-      "NON-STICK WITHOUT SPRAY: Food-grade silicone releases cookies, pastry, and roasted vegetables cleanly.",
-      "REUSABLE AND MONEY-SAVING: Replaces parchment paper and aluminum foil for everyday baking.",
-      "FITS STANDARD PANS: 3-piece set fits half-sheet and quarter-sheet baking pans.",
-      "EASY TO CLEAN: Wipe with warm soapy water or place in the dishwasher.",
-      "HEAT RESISTANT: Safe for oven temperatures up to 450F."
+      "Great for any professional manicurist or beginner",
+      "Travel size for the salon professional on the go!",
+      "Modern design looks great in any home or salon",
+      "Light weight drill makes working all day easy to do",
+      "Features an excellent selection of sanding bits"
     ],
-    "description": "A reusable baking surface for cookies, vegetables, and everyday oven meals. The silicone mat releases food cleanly and cuts down on parchment paper.",
-    "review_profile": "generic",
+    "description": "Electric Nail Art Pen Shape File Drilling Handpiece Machine 6 Optional Bits (5 diamond bits, 1 emery rod with 6 sanding bands) Electric Nail Art Drill Variable speed control: 3,000 RPM up to 20,000 RPM Handpiece can directly connected to electricity, easy to carry around!! Light-weight design for precise operation!",
     "current_listing": {
-      "title": "NordicHome Silicone Baking Mat Set, 3-Piece Non-Stick Oven Liner for Cookies, Pastry and Roasting",
+      "title": "Brand B Nail Art Drill Treatments KIT Electric File Buffer Bits Acrylics 6 File Pedicure Hands & Nails Repair (110V US 1.5M Plug) - Pink",
       "bullets": [
-        "NON-STICK WITHOUT SPRAY: Food-grade silicone releases cookies, pastry, and roasted vegetables cleanly.",
-        "REUSABLE AND MONEY-SAVING: Replaces parchment paper and aluminum foil for everyday baking.",
-        "FITS STANDARD PANS: 3-piece set fits half-sheet and quarter-sheet baking pans.",
-        "EASY TO CLEAN: Wipe with warm soapy water or place in the dishwasher.",
-        "HEAT RESISTANT: Safe for oven temperatures up to 450F."
+        "Great for any professional manicurist or beginner",
+        "Travel size for the salon professional on the go!",
+        "Modern design looks great in any home or salon",
+        "Light weight drill makes working all day easy to do",
+        "Features an excellent selection of sanding bits"
       ],
-      "description": "A reusable baking surface for cookies, vegetables, and everyday oven meals. The silicone mat releases food cleanly and cuts down on parchment paper."
+      "description": "Electric Nail Art Pen Shape File Drilling Handpiece Machine 6 Optional Bits (5 diamond bits, 1 emery rod with 6 sanding bands) Electric Nail Art Drill Variable speed control: 3,000 RPM up to 20,000 RPM Handpiece can directly connected to electricity, easy to carry around!! Light-weight design for precise operation!"
+    },
+    "data_origin": {
+      "dataset": "Amazon Reviews 2023",
+      "parent_asin": "B07D1B499B",
+      "note": "Real public product metadata; brand anonymized. Draft copy sanitized for prohibited claims."
     }
   },
   {
     "sku_id": "SKU-003",
-    "asin": "B0DEMO003",
-    "brand": "NordicHome",
-    "title": "NordicHome Portable Blender, 20 oz USB-C Rechargeable Personal Blender for Shakes, Smoothies and Travel",
-    "category": "Kitchen & Dining",
-    "subcategory": "Blenders",
+    "asin": "B074CQC2NG",
+    "brand": "Brand C",
+    "title": "Brand C Ultra Secret Lift Pro - Instant Neck Lift",
+    "category": "Beauty & Personal Care",
+    "subcategory": "Skin Care Tools",
     "marketplace": "US",
-    "price": 29.99,
-    "cost": 9.8,
+    "price": 16.95,
+    "cost": 6.78,
     "stock": 95,
-    "rating": 3.8,
-    "review_count": 420,
+    "rating": 3.4,
+    "review_count": 2945,
     "target_acos": 0.28,
     "current_bid": 1.1,
     "attributes": [
-      "20 oz",
-      "USB-C rechargeable",
-      "six blades",
-      "leak-proof lid"
+      "12 lifts per kit",
+      "Breathable tape",
+      "For neck and jaw",
+      "Adult"
     ],
     "benefits": [
-      "blend on the go",
-      "USB-C charging",
-      "six-blade blending",
-      "easy one-button operation"
+      "lifts and tightens sagging skin instantly and discreetly",
+      "eliminates wrinkles from your neck and jaw area with wider range",
+      "each kit comes with 12 pre-assembled neck and jaw lifts",
+      "each piece contains breathable, hypoallergenic tape"
     ],
     "bullets": [
-      "BLEND ON THE GO: 20 oz cup doubles as a travel bottle for shakes, smoothies, and protein drinks.",
-      "USB-C RECHARGEABLE: Charges from a laptop, power bank, or car adapter.",
-      "SIX-BLADE BLENDING: Stainless steel blades handle fruit, protein powder, and ice.",
-      "LEAK-PROOF LID: Silicone seal helps prevent spills in a gym bag or backpack.",
-      "ONE-BUTTON OPERATION: Press to blend, twist to drink, rinse to clean."
+      "Lifts and tightens sagging skin instantly and discreetly",
+      "Eliminates wrinkles from your neck and jaw area with wider range",
+      "Each kit comes with 12 pre-assembled neck and jaw lifts",
+      "Each piece contains breathable, hypoallergenic tape",
+      "Breathable adhesive strips are shaped for the neck and jaw."
     ],
-    "description": "A cordless personal blender for shakes and smoothies on the go. The 20 oz cup doubles as a travel bottle and charges over USB-C.",
-    "review_profile": "blender",
+    "description": "Try this simple self-test: Looking in a mirror, place index fingers in front of your ears, and thumbs at the end of your jaw, then push skin upward and back. Do you like what you see? That is what Secret Lift Pro will do for you. Cosmetic surgery results without the pain and expense. You will look years younger instantly and feel great. Secret Lift Pro will take years off your appearance in just a few minutes. Not only will you look younger, but you will also feel great. This face and neck lift system will lift sagging skin, eliminate wrinkles from your face and eye area. No one will know your secret! Secret Lift Pro is the solution.",
     "current_listing": {
-      "title": "NordicHome Best Seller Portable Blender, 20 oz USB-C Rechargeable Personal Blender",
+      "title": "Brand C Ultra Secret Lift Pro - Instant Neck Lift",
       "bullets": [
-        "BEST SELLER QUALITY: Our 100% leak-proof design is a customer favorite.",
-        "BLEND ON THE GO: 20 oz cup doubles as a travel bottle for shakes and smoothies.",
-        "USB-C RECHARGEABLE: Charges from a laptop, power bank, or car adapter.",
-        "SIX-BLADE BLENDING: Stainless steel blades handle fruit, protein powder, and ice.",
-        "ONE-BUTTON OPERATION: Press to blend, twist to drink, rinse to clean."
+        "Lifts and tightens sagging skin instantly and discreetly",
+        "Eliminates wrinkles from your neck and jaw area with wider range",
+        "Each kit comes with 12 pre-assembled neck and jaw lifts",
+        "Each piece contains medical grade, breathable, hypoallergenic tape",
+        "Made in USA"
       ],
-      "description": "The best seller portable blender for shakes and smoothies. Eco-friendly and 100% leak-proof for travel and the gym."
+      "description": "Our Guarantee: The most effective neck lifting product you've ever used or your money back. Try this simple self-test: Looking in a mirror, place index fingers in front of your ears, and thumbs at the end of your jaw, then push skin upward and back. Do you like what you see? That is what Secret Lift Pro will do for you. Cosmetic surgery results without the pain and expense. Secret Lift Pro is simple to use, and you will get guaranteed results. You will look years younger instantly and feel great. Secret Lift Pro will take years off your appearance in just a few minutes. Not only will you look younger, but you will also feel great. This face and neck lift system will lift sagging skin, eliminate wrinkles from your face and eye area. No one will know your secret! Secret Lift Pro is the solution."
+    },
+    "data_origin": {
+      "dataset": "Amazon Reviews 2023",
+      "parent_asin": "B074CQC2NG",
+      "note": "Real public product metadata; brand anonymized. Draft copy sanitized for prohibited claims."
     }
   },
   {
     "sku_id": "SKU-004",
-    "asin": "B0DEMO004",
-    "brand": "NordicHome",
-    "title": "NordicHome Bamboo Cutting Board Set, 3 Sizes with Juice Groove and Built-In Handles",
-    "category": "Kitchen & Dining",
-    "subcategory": "Cutting Boards",
+    "asin": "B00692OA2M",
+    "brand": "Brand D",
+    "title": "Brand D 5-Star G-Whiz High Precision Cordless Hair Trimmer 8986",
+    "category": "Beauty & Personal Care",
+    "subcategory": "Hair Removal",
     "marketplace": "US",
-    "price": 27.99,
-    "cost": 8.4,
+    "price": 31.14,
+    "cost": 12.46,
     "stock": 150,
-    "rating": 4.3,
-    "review_count": 730,
+    "rating": 4.0,
+    "review_count": 582,
     "target_acos": 0.26,
-    "current_bid": 0.65,
+    "current_bid": 0.75,
     "attributes": [
-      "3 sizes",
-      "organic bamboo",
-      "juice groove",
-      "reversible"
+      "Cordless",
+      "Adjustable T-blade",
+      "3 trimming guides",
+      "3 oz",
+      "Black"
     ],
     "benefits": [
-      "gentle on knife edges",
-      "catches juice and runoff",
-      "covers prep and serving",
-      "reversible design"
+      "professional precision",
+      "stylish and functional",
+      "accessories included",
+      "product specifications"
     ],
     "bullets": [
-      "ORGANIC BAMBOO: Dense, renewable bamboo is gentle on knife edges.",
-      "JUICE GROOVE: Built-in groove catches runoff from roasts, fruit, and steaks.",
-      "THREE SIZES: Small, medium, and large boards cover prep, carving, and serving.",
-      "REVERSIBLE DESIGN: Use one side for meat and the other for vegetables.",
-      "EASY CARE: Hand wash, dry upright, and oil occasionally to preserve the finish."
+      "Professional precision: Brand D's Professional 5-Star Cordless G-Whiz Trimmer was specifically designed for precision lining, quick and easy touch ups, reaching tight areas with accuracy and ease; intended for professional use only",
+      "Stylish and functional: The 5-Star Cordless G-Whiz is easy to use with its compact size and sleek design; featuring an adjustable T-Blade to create designed with ease while offering superior blade speed and top notch precision",
+      "Accessories included: the G Whiz comes with all accessories required for professional use; the trimmer, 3 T-shape trimming guides (1/16\", 1/8\" and 3/16\"), AA battery, lanyard, cleaning brush, clipper blade oil, and operating instructions",
+      "Product specifications: The 5 Star G Whiz High Precision Hair Trimmer measures 5.25\" long and weighs 3 ounces; features a rechargeable motor, an adjustable (#1062-600) blade that can be set to zero overlap, and is battery operated requiring 1 AA battery",
+      "Includes three trimming guides, a cleaning brush, and blade oil."
     ],
-    "description": "A three-piece bamboo board set for prep, carving, and serving. The juice groove keeps counters clean and the reversible design separates food types.",
-    "review_profile": "generic",
+    "description": "Featuring an adjustable close-cutting t-blade and a convenient, battery-operated design, the G-Whiz High Precision Cordless Hair Trimmer is the ideal on-the-go trimmer for barbers and stylists. From Brand D Professionals commercial grade 5-Star line of products, this trimmer is intended for professional use only and is designed to deliver the sharp performance that experts demand. With its compact size and sleek design, this stylish trimmer offers an appealing aesthetic in addition to top-notch precision and function. It can be worn around your neck all day with the stylish Brand D lanyard (included). Look the part and wear your art. Leo J.",
     "current_listing": {
-      "title": "NordicHome Bamboo Cutting Board Set, 3 Sizes with Juice Groove and Built-In Handles",
+      "title": "Brand D 5-Star G-Whiz High Precision Cordless Hair Trimmer 8986",
       "bullets": [
-        "ORGANIC BAMBOO: Dense, renewable bamboo is gentle on knife edges.",
-        "JUICE GROOVE: Built-in groove catches runoff from roasts, fruit, and steaks.",
-        "THREE SIZES: Small, medium, and large boards cover prep, carving, and serving.",
-        "REVERSIBLE DESIGN: Use one side for meat and the other for vegetables.",
-        "EASY CARE: Hand wash, dry upright, and oil occasionally to preserve the finish."
+        "PROFESSIONAL PRECISION: Brand D's Professional 5-Star Cordless G-Whiz Trimmer was specifically designed for precision lining, quick and easy touch ups, reaching tight areas with accuracy and ease; intended for professional use only",
+        "STYLISH AND FUNCTIONAL: The 5-Star Cordless G-Whiz is easy to use with its compact size and sleek design; featuring an adjustable T-Blade to create designed with ease while offering superior blade speed and top notch precision",
+        "ACCESSORIES INCLUDED: the G Whiz comes with all accessories required for professional use; the trimmer, 3 T-shape trimming guides (1/16\", 1/8\" and 3/16\"), AA battery, lanyard, cleaning brush, clipper blade oil, and operating instructions",
+        "PRODUCT SPECIFICATIONS: The 5 Star G Whiz High Precision Hair Trimmer measures 5.25\" long and weighs 3 ounces; features a rechargeable motor, an adjustable (#1062-600) blade that can be set to zero overlap, and is battery operated requiring…",
+        "Featuring an adjustable close-cutting t-blade and a convenient, battery-operated design, the G-Whiz High Precision Cordless Hair Trimmer is the ideal on-the-go trimmer for barbers and stylists."
       ],
-      "description": "A three-piece bamboo board set for prep, carving, and serving. The juice groove keeps counters clean and the reversible design separates food types."
+      "description": "Featuring an adjustable close-cutting t-blade and a convenient, battery-operated design, the G-Whiz High Precision Cordless Hair Trimmer is the ideal on-the-go trimmer for barbers and stylists. From Brand D Professionals commercial grade 5-Star line of products, this trimmer is intended for professional use only and is designed to deliver the sharp performance that experts demand. With its compact size and sleek design, this stylish trimmer offers an appealing aesthetic in addition to top-notch precision and function. It can be worn around your neck all day with the stylish Brand D lanyard (included). Look the part and wear your art. Leo J. Brand D invented the first hand-held electric clipper back in 1919. He believed in necessary, reasonably priced products that enhanced the lives of everyone who used them. Today, all Brand D products embrace the principles of our founder."
+    },
+    "data_origin": {
+      "dataset": "Amazon Reviews 2023",
+      "parent_asin": "B00692OA2M",
+      "note": "Real public product metadata; brand anonymized. Draft copy sanitized for prohibited claims."
     }
   },
   {
     "sku_id": "SKU-005",
-    "asin": "B0DEMO005",
-    "brand": "NordicHome",
-    "title": "NordicHome Reusable Storage Bags, 10-Pack BPA-Free Leakproof Food Bags for Snacks, Sandwiches and Travel",
-    "category": "Kitchen & Dining",
-    "subcategory": "Food Storage",
+    "asin": "B0BMWQQR9W",
+    "brand": "Brand E",
+    "title": "Brand E Ceramide Extreme Thickener - Nail Strengthener - Ridge-Free, Long-Wear Shine Finish - Clear, 0.55 Fluid Ounce",
+    "category": "Beauty & Personal Care",
+    "subcategory": "Nail Care",
     "marketplace": "US",
-    "price": 19.99,
-    "cost": 5.2,
+    "price": 6.97,
+    "cost": 2.79,
     "stock": 300,
     "rating": 4.2,
-    "review_count": 540,
+    "review_count": 3892,
     "target_acos": 0.25,
     "current_bid": 0.55,
     "attributes": [
-      "10-pack",
-      "BPA-free",
-      "leakproof",
-      "freezer safe"
+      "0.55 fl oz",
+      "Ceramide treatment",
+      "Clear finish",
+      "Base and top coat"
     ],
     "benefits": [
-      "replaces single-use bags",
-      "food-safe material",
-      "freezer and dishwasher safe",
-      "ten-bag set"
+      "nail strengthener",
+      "3 day results",
+      "quick dry",
+      "use alone"
     ],
     "bullets": [
-      "REUSABLE AND LEAKPROOF: Replace single-use plastic bags for snacks, sandwiches, and travel.",
-      "BPA-FREE MATERIAL: Food-safe construction for everyday food storage.",
-      "FREEZER AND DISHWASHER SAFE: Store leftovers and clean up without fuss.",
-      "TEN-BAG SET: Five snack bags and five sandwich bags cover lunch prep and travel.",
-      "EASY TO SEAL: Zip closure keeps food fresh and prevents spills."
+      "Nail strengthener: A nail binding treatment rich in ceramide that provides nails with strength to reinforce the thinnest nail layers to prevent bending and breaking.",
+      "3 day results: Grow smoother, harder, longer nails with visible improvement in as little as 3 days.",
+      "Quick dry: Dries instantly to anti-chip, long-lasting, plump gel finish so you can go about your day without fear of ruining your manicure.",
+      "Use alone: Apply 2 coats over dry, clean nails. Let each coat dry before applying another coat.",
+      "Use with nail color: Apply as base & top coat. For longest-lasting protection, apply another coat every 3 days. Remove easily with nail polish remover."
     ],
-    "description": "A ten-piece reusable bag set for snacks, sandwiches, and travel. The leakproof zip closure and freezer-safe material replace single-use bags.",
-    "review_profile": "generic",
+    "description": "A nail binding treatment rich in ceramide that provides nails with strength to reinforce the thinnest nail layers to prevent bending and breaking.",
     "current_listing": {
-      "title": "NordicHome Reusable Storage Bags, 10-Pack BPA-Free Leakproof Food Bags for Snacks, Sandwiches and Travel",
+      "title": "Brand E Ceramide Extreme Thickener - Nail Strengthener - Ridge-Free, Long-Wear Shine Finish - Clear, 0.55 Fluid Ounce",
       "bullets": [
-        "REUSABLE AND LEAKPROOF: Replace single-use plastic bags for snacks, sandwiches, and travel.",
-        "BPA-FREE MATERIAL: Food-safe construction for everyday food storage.",
-        "FREEZER AND DISHWASHER SAFE: Store leftovers and clean up without fuss.",
-        "TEN-BAG SET: Five snack bags and five sandwich bags cover lunch prep and travel.",
-        "EASY TO SEAL: Zip closure keeps food fresh and prevents spills."
+        "NAIL STRENGTHENER: A nail binding treatment rich in ceramide that provides nails with strength to reinforce the thinnest nail layers to prevent bending and breaking.",
+        "3 DAY RESULTS: Grow smoother, harder, longer nails with visible improvement in as little as 3 days.",
+        "QUICK DRY: Dries instantly to anti-chip, long-lasting, plump gel finish so you can go about your day without fear of ruining your manicure.",
+        "USE ALONE: Apply 2 coats over dry, clean nails. Let each coat dry before applying another coat.",
+        "USE WITH NAIL COLOR: Apply as base & top coat. For longest-lasting protection, apply another coat every 3 days. Remove easily with nail polish remover."
       ],
-      "description": "A ten-piece reusable bag set for snacks, sandwiches, and travel. The leakproof zip closure and freezer-safe material replace single-use bags."
+      "description": "A nail binding treatment rich in ceramide that provides nails with strength to reinforce the thinnest nail layers to prevent bending and breaking."
+    },
+    "data_origin": {
+      "dataset": "Amazon Reviews 2023",
+      "parent_asin": "B0BMWQQR9W",
+      "note": "Real public product metadata; brand anonymized. Draft copy sanitized for prohibited claims."
     }
   }
 ]

@@ -3,54 +3,54 @@
     "sku_id": "SKU-001",
     "keywords": [
       {
-        "keyword": "french press",
+        "keyword": "hair diffuser",
         "search_volume": 74000,
         "relevance": 0.98
       },
       {
-        "keyword": "stainless steel french press",
-        "search_volume": 18100,
-        "relevance": 0.95
-      },
-      {
-        "keyword": "insulated coffee press",
+        "keyword": "collapsible diffuser",
         "search_volume": 9900,
-        "relevance": 0.91
+        "relevance": 0.94
       },
       {
-        "keyword": "coffee maker",
-        "search_volume": 165000,
-        "relevance": 0.72
+        "keyword": "curly hair diffuser",
+        "search_volume": 18100,
+        "relevance": 0.96
       },
       {
-        "keyword": "34 oz french press",
-        "search_volume": 2400,
-        "relevance": 0.88
-      },
-      {
-        "keyword": "camping coffee press",
+        "keyword": "travel hair dryer attachment",
         "search_volume": 5400,
         "relevance": 0.84
       },
       {
-        "keyword": "double wall french press",
+        "keyword": "silicone diffuser",
         "search_volume": 3600,
+        "relevance": 0.88
+      },
+      {
+        "keyword": "diffuser for curly hair",
+        "search_volume": 12100,
+        "relevance": 0.95
+      },
+      {
+        "keyword": "hair dryer diffuser",
+        "search_volume": 33100,
+        "relevance": 0.92
+      },
+      {
+        "keyword": "portable diffuser",
+        "search_volume": 2900,
+        "relevance": 0.82
+      },
+      {
+        "keyword": "diffuser attachment",
+        "search_volume": 14800,
         "relevance": 0.9
       },
       {
-        "keyword": "coffee press",
-        "search_volume": 22200,
-        "relevance": 0.93
-      },
-      {
-        "keyword": "french press coffee maker",
-        "search_volume": 12100,
-        "relevance": 0.96
-      },
-      {
-        "keyword": "travel french press",
-        "search_volume": 2900,
-        "relevance": 0.82
+        "keyword": "curl diffuser",
+        "search_volume": 4400,
+        "relevance": 0.86
       }
     ]
   },
@@ -58,54 +58,54 @@
     "sku_id": "SKU-002",
     "keywords": [
       {
-        "keyword": "silicone baking mat",
-        "search_volume": 49500,
+        "keyword": "nail drill",
+        "search_volume": 110000,
         "relevance": 0.98
       },
       {
-        "keyword": "baking mat set",
+        "keyword": "nail art drill",
+        "search_volume": 18100,
+        "relevance": 0.95
+      },
+      {
+        "keyword": "electric nail file",
+        "search_volume": 40500,
+        "relevance": 0.96
+      },
+      {
+        "keyword": "manicure drill kit",
         "search_volume": 8100,
-        "relevance": 0.93
+        "relevance": 0.92
       },
       {
-        "keyword": "non stick oven liner",
-        "search_volume": 6600,
-        "relevance": 0.88
-      },
-      {
-        "keyword": "cookie baking mat",
-        "search_volume": 4400,
-        "relevance": 0.9
-      },
-      {
-        "keyword": "reusable baking sheet",
-        "search_volume": 3900,
-        "relevance": 0.86
-      },
-      {
-        "keyword": "pastry mat",
-        "search_volume": 14800,
-        "relevance": 0.79
-      },
-      {
-        "keyword": "silicone mat for baking",
-        "search_volume": 12100,
+        "keyword": "acrylic nail drill",
+        "search_volume": 9900,
         "relevance": 0.94
       },
       {
-        "keyword": "oven liner",
+        "keyword": "pedicure drill",
+        "search_volume": 5400,
+        "relevance": 0.88
+      },
+      {
+        "keyword": "nail drill machine",
+        "search_volume": 27100,
+        "relevance": 0.97
+      },
+      {
+        "keyword": "professional nail drill",
+        "search_volume": 12100,
+        "relevance": 0.93
+      },
+      {
+        "keyword": "nail buffer drill",
+        "search_volume": 4400,
+        "relevance": 0.85
+      },
+      {
+        "keyword": "nail file kit",
         "search_volume": 22200,
-        "relevance": 0.71
-      },
-      {
-        "keyword": "baking supplies",
-        "search_volume": 90500,
-        "relevance": 0.63
-      },
-      {
-        "keyword": "half sheet baking mat",
-        "search_volume": 2900,
-        "relevance": 0.89
+        "relevance": 0.78
       }
     ]
   },
@@ -113,54 +113,54 @@
     "sku_id": "SKU-003",
     "keywords": [
       {
-        "keyword": "portable blender",
-        "search_volume": 110000,
+        "keyword": "neck lift tape",
+        "search_volume": 40500,
         "relevance": 0.98
       },
       {
-        "keyword": "personal blender",
-        "search_volume": 74000,
-        "relevance": 0.95
-      },
-      {
-        "keyword": "usb blender",
-        "search_volume": 18100,
-        "relevance": 0.92
-      },
-      {
-        "keyword": "blender for smoothies",
-        "search_volume": 40500,
-        "relevance": 0.94
-      },
-      {
-        "keyword": "travel blender",
-        "search_volume": 8100,
-        "relevance": 0.89
-      },
-      {
-        "keyword": "cordless blender",
-        "search_volume": 5400,
-        "relevance": 0.87
-      },
-      {
-        "keyword": "portable blender for shakes",
-        "search_volume": 9900,
+        "keyword": "face lift tape",
+        "search_volume": 33100,
         "relevance": 0.96
       },
       {
-        "keyword": "small blender",
-        "search_volume": 33100,
-        "relevance": 0.78
+        "keyword": "instant neck lift",
+        "search_volume": 8100,
+        "relevance": 0.95
       },
       {
-        "keyword": "blender bottle",
-        "search_volume": 22200,
-        "relevance": 0.7
+        "keyword": "jaw lift strips",
+        "search_volume": 5400,
+        "relevance": 0.92
       },
       {
-        "keyword": "smoothie blender",
-        "search_volume": 27100,
+        "keyword": "neck wrinkle tape",
+        "search_volume": 4400,
+        "relevance": 0.9
+      },
+      {
+        "keyword": "invisible face tape",
+        "search_volume": 14800,
+        "relevance": 0.93
+      },
+      {
+        "keyword": "neck lift strips",
+        "search_volume": 6600,
+        "relevance": 0.94
+      },
+      {
+        "keyword": "face tape for wrinkles",
+        "search_volume": 9900,
         "relevance": 0.91
+      },
+      {
+        "keyword": "neck tape",
+        "search_volume": 12100,
+        "relevance": 0.88
+      },
+      {
+        "keyword": "facial lift tape",
+        "search_volume": 3600,
+        "relevance": 0.89
       }
     ]
   },
@@ -168,54 +168,54 @@
     "sku_id": "SKU-004",
     "keywords": [
       {
-        "keyword": "bamboo cutting board",
-        "search_volume": 60500,
+        "keyword": "hair trimmer",
+        "search_volume": 90500,
         "relevance": 0.98
       },
       {
-        "keyword": "cutting board set",
+        "keyword": "cordless hair trimmer",
         "search_volume": 18100,
-        "relevance": 0.94
-      },
-      {
-        "keyword": "wood cutting board",
-        "search_volume": 33100,
-        "relevance": 0.91
-      },
-      {
-        "keyword": "juice groove cutting board",
-        "search_volume": 4400,
-        "relevance": 0.89
-      },
-      {
-        "keyword": "kitchen chopping board",
-        "search_volume": 8100,
-        "relevance": 0.86
-      },
-      {
-        "keyword": "serving board",
-        "search_volume": 12100,
-        "relevance": 0.74
-      },
-      {
-        "keyword": "bamboo chopping board",
-        "search_volume": 9900,
         "relevance": 0.95
       },
       {
-        "keyword": "large cutting board",
-        "search_volume": 14800,
-        "relevance": 0.84
+        "keyword": "precision trimmer",
+        "search_volume": 12100,
+        "relevance": 0.94
       },
       {
-        "keyword": "cutting boards for kitchen",
-        "search_volume": 27100,
+        "keyword": "barber trimmer",
+        "search_volume": 8100,
+        "relevance": 0.92
+      },
+      {
+        "keyword": "beard trimmer",
+        "search_volume": 74000,
         "relevance": 0.9
       },
       {
-        "keyword": "wooden cutting board set",
+        "keyword": "hair clipper",
+        "search_volume": 60500,
+        "relevance": 0.86
+      },
+      {
+        "keyword": "trimmer for men",
+        "search_volume": 40500,
+        "relevance": 0.88
+      },
+      {
+        "keyword": "professional hair trimmer",
         "search_volume": 6600,
-        "relevance": 0.92
+        "relevance": 0.93
+      },
+      {
+        "keyword": "cordless trimmer",
+        "search_volume": 9900,
+        "relevance": 0.91
+      },
+      {
+        "keyword": "hair cutting machine",
+        "search_volume": 14800,
+        "relevance": 0.84
       }
     ]
   },
@@ -223,54 +223,54 @@
     "sku_id": "SKU-005",
     "keywords": [
       {
-        "keyword": "reusable storage bags",
-        "search_volume": 40500,
+        "keyword": "nail strengthener",
+        "search_volume": 49500,
         "relevance": 0.98
       },
       {
-        "keyword": "reusable food bags",
-        "search_volume": 22200,
+        "keyword": "nail thickener",
+        "search_volume": 8100,
         "relevance": 0.95
       },
       {
-        "keyword": "leakproof snack bags",
-        "search_volume": 5400,
-        "relevance": 0.9
+        "keyword": "ridge filler",
+        "search_volume": 12100,
+        "relevance": 0.92
       },
       {
-        "keyword": "silicone food bags",
+        "keyword": "nail growth treatment",
         "search_volume": 18100,
-        "relevance": 0.88
-      },
-      {
-        "keyword": "travel food bags",
-        "search_volume": 3600,
-        "relevance": 0.82
-      },
-      {
-        "keyword": "freezer bags reusable",
-        "search_volume": 4400,
-        "relevance": 0.86
-      },
-      {
-        "keyword": "reusable sandwich bags",
-        "search_volume": 9900,
         "relevance": 0.94
       },
       {
-        "keyword": "eco friendly food storage",
-        "search_volume": 8100,
-        "relevance": 0.79
+        "keyword": "ceramide nail treatment",
+        "search_volume": 2400,
+        "relevance": 0.96
       },
       {
-        "keyword": "lunch bags for kids",
+        "keyword": "clear nail base coat",
+        "search_volume": 6600,
+        "relevance": 0.88
+      },
+      {
+        "keyword": "nail hardening polish",
+        "search_volume": 9900,
+        "relevance": 0.93
+      },
+      {
+        "keyword": "nail repair treatment",
         "search_volume": 14800,
-        "relevance": 0.68
+        "relevance": 0.91
       },
       {
-        "keyword": "food storage containers",
-        "search_volume": 74000,
-        "relevance": 0.61
+        "keyword": "base coat nail polish",
+        "search_volume": 22200,
+        "relevance": 0.82
+      },
+      {
+        "keyword": "nail protein treatment",
+        "search_volume": 4400,
+        "relevance": 0.87
       }
     ]
   }

@@ -4,7 +4,7 @@
 
 一个面向亚马逊运营的 Multi-Agent Demo：把「评论洞察 → Listing 生成 → 合规审查 → 广告诊断 → 人工审批 → dry-run 执行」串成一条可演示、可回测、可量化的业务链路。
 
-> 所有数据均为合成数据，不包含真实 Amazon 数据；接口形状模仿 SP-API / Ads API，便于后续替换。合规规则为演示摘要，不构成法律建议。本项目与 Amazon 无关联。
+> 商品与评论来自公开研究数据集 Amazon Reviews 2023（All Beauty），品牌名已匿名化；广告、库存、成本、转化率为模拟数据。接口形状模仿 SP-API / Ads API，便于后续替换。合规规则为演示摘要，不构成法律建议。本项目与 Amazon 无关联。
 
 ---
 
@@ -14,7 +14,7 @@
 |---|---|
 | 流程自动化 | 一条命令/一个 API 跑完整链路；节点级耗时、token、成本、审计日志 |
 | AIGC 内容生产 | Listing 标题/五点/描述/关键词生成 + 21 条规则审查 + 人工抽检入口 |
-| 数据链路 | 90 天广告数据、30 天关键词数据、评论数据；建议可回测 |
+| 数据链路 | 真实 Amazon 公开评论与商品元数据（品牌匿名）+ 模拟 90 天广告数据；建议可回测 |
 | Multi-Agent 编排 | LangGraph 状态图、Supervisor 路由、HITL 断点、失败降级 |
 | RAG | Chroma/BM25 混合检索、RRF、metadata 过滤、引用、10 条 golden case |
 | 量化 | 合规通过率、修复数、ACOS 变化、预计花费变化、单次成本 |
@@ -28,8 +28,8 @@
 uv venv .venv --python 3.11
 uv pip install --python .venv\Scripts\python.exe -r requirements.txt
 
-# 2. 生成合成数据
-.\.venv\Scripts\python.exe data\generate_seed.py
+# 2. 种子数据已随仓库提供；如需从公开数据集重建（约 540MB 下载）
+.\.venv\Scripts\python.exe data\fetch_real_seed.py
 
 # 3. 配置 LLM（可选）
 Copy-Item .env.example .env
@@ -120,7 +120,7 @@ Streamlit 单页 ──HTTP──> FastAPI ──> LangGraph
 
 分层：
 
-- **数据层**：`core/store.py` 读取合成数据；`rag/ingest.py` 构建检索语料。
+- **数据层**：`core/store.py` 读取真实公开评论（品牌匿名）+ 模拟广告；`rag/ingest.py` 构建检索语料。
 - **检索层**：`rag/retriever.py`，BM25 + Chroma dense + RRF + metadata 过滤。
 - **编排层**：`agent/graph.py`，LangGraph `StateGraph` + `MemorySaver` + `interrupt_before`。
 - **执行层**：`agent/nodes/executor.py`，只做 dry-run，写审计日志。
@@ -202,15 +202,17 @@ Streamlit 单页 ──HTTP──> FastAPI ──> LangGraph
 
 ## 验证状态
 
-本机已验证（无 LLM key，规则兜底）：
+本机已验证：
 
 - CLI：`scripts/run_demo.py` 全链路通过，审批后 5 条 dry-run 动作。
 - API：`/runs` → `awaiting_approval` → `/approve` → `completed`。
 - UI：Streamlit 页面渲染、运行、审批、审计、指标均通过。
-- 评测：10/10 golden case 通过。
+- 评测：无 LLM 兜底 10/10；真实 LLM `--require-llm` 9/10（`G-003` 草稿未包含精确短语 `nail art drill`，其余 9 条通过；未为过测放宽 golden）。
+- 数据：5 个真实商品 + 250 条真实评论 + 20 条真实历史 Listing；广告/库存/成本为模拟。
+- 部署：Streamlit Community Cloud 在线 Demo 已跑通审批与 dry-run。
 - Docker：`docker compose config` 校验通过；镜像构建未执行（本机 Docker daemon 未启动）。
 
-未验证：真实 LLM 生成路径（需要填入 `OPENAI_API_KEY` 后重跑评测）；真实 SP-API / Ads API。
+未验证：真实 SP-API / Ads API 接入；多站点/多店铺；图像/视频素材生成。
 
 ---
 
@@ -229,13 +231,14 @@ amz-ops-agent/
 │   ├── config.py             # 环境变量
 │   ├── llm.py                # OpenAI 兼容客户端 + JSON 解析 + 兜底
 │   ├── db.py                 # SQLite runs / audit / metrics
-│   └── store.py              # 合成数据访问
+│   └── store.py              # 种子数据访问（真实评论 + 模拟广告）
 ├── rag/
 │   ├── ingest.py             # 语料构建
 │   └── retriever.py          # BM25 + Chroma + RRF
 ├── data/
-│   ├── generate_seed.py      # 确定性合成数据生成器
-│   └── seed/                 # SKU / 评论 / Listing / 广告 / 规则 / 政策
+│   ├── fetch_real_seed.py    # 从公开数据集重建种子（固定快照 + sha256）
+│   ├── generate_seed.py      # 合成数据兜底（默认拒绝覆盖真实种子）
+│   └── seed/                 # SKU / 评论 / Listing / 广告 / 规则 / 政策 / PROVENANCE
 ├── evals/                    # golden set + 评测脚本
 ├── scripts/                  # CLI demo + smoke test
 ├── requirements.txt
@@ -273,8 +276,9 @@ Invoke-RestMethod "http://127.0.0.1:8000/runs/$($run.run_id)/approve" -Method Po
 
 ## 数据说明
 
-- 全部数据由 `data/generate_seed.py` 以固定随机种子生成，可复现。
-- 5 个 SKU、20 条历史 Listing、150 条评论、450 行广告日报、30 条关键词数据、21 条合规规则、5 份政策摘要。
+- **真实数据**：5 个主 SKU 的商品标题、五点、描述、价格、评分、评论数和评论正文，来自 Amazon Reviews 2023（All Beauty）固定快照；20 条历史 Listing 同样来自该数据集的真实商品。品牌名替换为 Brand A–E，评论去除了用户 ID、图片和点赞数。
+- **模拟数据**：90 天广告日报、关键词出价、库存、成本、目标 ACOS、关键词搜索量、历史 Listing 转化率。公开渠道没有卖家私有的广告与库存数据。
+- 数据重建：`data/fetch_real_seed.py`，固定 URL + sha256 校验；来源、许可、匿名化与模拟字段见 [`data/seed/PROVENANCE.md`](data/seed/PROVENANCE.md)。
 - 接口形状模仿 SP-API / Ads API；`core/store.py` 是 mock 层，替换为真实客户端时保持节点接口不变。
 - 合规规则是演示用摘要，不是 Amazon 官方政策全文，也不构成法律建议。
 
@@ -292,12 +296,12 @@ Invoke-RestMethod "http://127.0.0.1:8000/runs/$($run.run_id)/approve" -Method Po
 
 ## 5 分钟演示脚本
 
-1. 选 `SKU-003`：评分 3.8、ACOS 97%、评论里集中抱怨电池/搅拌力/漏水。
-2. 点 **Run pipeline**，四个 Agent 依次跑完。
-3. **Insight**：3 个痛点 + 原文引用。
-4. **Listing**：新标题/五点，引用历史高转化 Listing。
-5. **Compliance**：当前 Listing 6 个问题，新草稿 0 个，修复 6 个。
-6. **Ads**：ACOS 97%、花费上涨、5 条降价建议、30 天回测。
+1. 选 `SKU-003`：真实颈膜商品，3.4 星、2945 条评论，评论集中在效果不足、粘不住、扯皮肤。
+2. 点 **运行流水线**，四个 Agent 依次跑完。
+3. **Insight**：痛点来自真实评论原文与引用。
+4. **Listing**：新标题/五点，引用真实历史高转化 Listing。
+5. **Compliance**：当前 Listing 的真实宣称（medical grade、Made in USA、Guarantee）被规则命中，新草稿通过。
+6. **Ads**：ACOS 偏高、花费上涨、5 条降价建议、30 天回测（广告为模拟数据）。
 7. 侧边栏 **Approve**：执行器写 dry-run 审计日志。
 8. **Metrics**：耗时、token、成本、合规通过率。
 
@@ -305,4 +309,4 @@ Invoke-RestMethod "http://127.0.0.1:8000/runs/$($run.run_id)/approve" -Method Po
 
 ## License / Disclaimer
 
-Demo only. Synthetic data. Not affiliated with Amazon.com, Inc. "Amazon" is a trademark of Amazon.com, Inc. or its affiliates.
+Demo only. Product metadata and review text come from the public Amazon Reviews 2023 research dataset (brand names anonymized). Ads, inventory, cost and conversion data are simulated. Not affiliated with Amazon.com, Inc. "Amazon" is a trademark of Amazon.com, Inc. or its affiliates.
