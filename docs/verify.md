@@ -32,7 +32,14 @@
 $env:LLM_ENABLED="false"; $env:EMBEDDING_ENABLED="false"
 .\.venv\Scripts\python.exe -m evals.run_eval
 .\.venv\Scripts\python.exe -m scripts.smoke_test
+.\.venv\Scripts\python.exe -m scripts.verify_ops
 .\.venv\Scripts\python.exe -m scripts.verify_local_backend
+```
+
+`scripts.verify_ops` 校验选品排名确定性、5 个 SKU 的补货/预算/定价计划，以及 `full_chain` 仍停在 executor 闸门、批准后 5 条 dry-run：
+
+```text
+OPS_VERIFY_OK skus=5 top=SKU-001:67.5 drivers=5 evidence=2 execution=5_dry_run
 ```
 
 `scripts.verify_local_backend` 使用临时 `runs.sqlite` / `checkpoints.sqlite`，验证 Streamlit 云端单进程后端的完整闸门：
@@ -83,6 +90,7 @@ $env:LLM_ENABLED="false"; $env:EMBEDDING_ENABLED="false"
 ```powershell
 curl.exe -s http://127.0.0.1:8000/health
 curl.exe -s http://127.0.0.1:8000/skus
+curl.exe -s http://127.0.0.1:8000/opportunities
 curl.exe -s -X POST http://127.0.0.1:8000/runs -H "Content-Type: application/json" -d '{"sku_id":"SKU-003","mode":"full_chain"}'
 ```
 
@@ -93,7 +101,8 @@ curl.exe -s -X POST http://127.0.0.1:8000/runs -H "Content-Type: application/jso
 ```
 
 - `/skus` 返回 5 个 SKU。
-- `/runs` 返回 `"status":"awaiting_approval"`、`"next":["executor"]`；记下 `run_id`。
+- `/opportunities` 返回 `items` 5 条，`rank` 1–5，每条含 `score` / `drivers` / `evidence`。
+- `/runs` 返回 `"status":"awaiting_approval"`、`"next":["executor"]`；`state.ops_plan` 含 `inventory` / `budget` / `price_guardrail` / `roi`；记下 `run_id`。
 
 批准：
 
@@ -112,15 +121,16 @@ curl.exe -s -X POST http://127.0.0.1:8000/runs/<run_id>/approve -H "Content-Type
 打开 <http://localhost:8501>：
 
 1. 侧栏选 `SKU-003`（真实颈膜商品，3.4 星）+ `full_chain`，点 **运行流水线**。
-2. 期望：状态 `等待审批`；主区出现 洞察 / Listing / 合规 / 广告 / 审计 / 指标 六个 tab。
-3. 侧栏点 **批准并执行 dry-run**。期望：状态 `已完成`；`审计` 出现 5 条 dry-run 记录；`指标` 显示 `模型调用: 0`（无 LLM 时）。
-4. 停掉 API 再刷新。期望：侧栏 `API 不可达` + 启动命令，不白屏。
+2. 期望：状态 `等待审批`；主区出现 洞察 / Listing / 合规 / 广告 / 选品 / 审计 / 指标 七个 tab。
+3. 打开 **选品**：5 个 SKU 的机会排名、驱动因素与真实评论证据；下方是补货/预算/定价。打开 **指标**：ROI 显示人工分钟节省、LLM 成本与净收益。
+4. 侧栏点 **批准并执行 dry-run**。期望：状态 `已完成`；`审计` 出现 5 条 dry-run 记录；`指标` 显示 `模型调用: 0`（无 LLM 时）。
+5. 停掉 API 再刷新。期望：侧栏 `API 不可达` + 启动命令，不白屏。
 
 UI 逻辑可用 `streamlit.testing.v1.AppTest` 复现：
 
 ```powershell
 .\.venv\Scripts\python.exe -m scripts.verify_ui
-# 期望：UI_VERIFY_OK tabs=6 awaiting_approval=ok approve=5_dry_run reject=1_skip errors=0
+# 期望：UI_VERIFY_OK tabs=7 awaiting_approval=ok approve=5_dry_run reject=1_skip errors=0
 ```
 
 Streamlit Cloud 单进程模式（不需要先启动 API）：
@@ -137,7 +147,7 @@ $env:UI_APP=(Resolve-Path 'app\streamlit_cloud.py').Path
 2026-11-24 实测输出：
 
 ```
-UI_VERIFY_OK tabs=6 awaiting_approval=ok approve=5_dry_run reject=1_skip errors=0
+UI_VERIFY_OK tabs=7 awaiting_approval=ok approve=5_dry_run reject=1_skip errors=0
 ```
 
 ### 3.3 HITL 重启持久化
@@ -230,7 +240,7 @@ T-004 已完成中文 UI 改版（`SPEC-004-ui-redesign.md`）。UI 逻辑用 Ap
 ```powershell
 # 需先启动 API（:8000）
 .\.venv\Scripts\python.exe -m scripts.verify_ui
-# 期望：UI_VERIFY_OK tabs=6 awaiting_approval=ok approve=5_dry_run reject=1_skip errors=0
+# 期望：UI_VERIFY_OK tabs=7 awaiting_approval=ok approve=5_dry_run reject=1_skip errors=0
 ```
 
 浏览器验收（2026-11-24，`ego-browser`）：
@@ -239,7 +249,7 @@ T-004 已完成中文 UI 改版（`SPEC-004-ui-redesign.md`）。UI 逻辑用 Ap
 - 视口：1440 / 1024 / 768 / 390 实测 `innerWidth == docScrollWidth == bodyScrollWidth`，无越界元素；768 / 390 侧栏折叠为抽屉。
 - 控制台：CDP `Runtime` / `Log` 事件为 0 条报错；无破图。
 - 对比度：墨色 15.31:1、次级 6.49:1、弱化 4.65:1（纸白）/ 5.02:1（表面）、黄铜 4.54:1、奶油/黄铜 4.75:1；正文均 ≥ 4.5:1。
-- 键盘：Tab 可达 skip link、侧栏折叠、展开器、SKU / 模式、运行、六个 tab；focus 为 `solid 2px #9C631C`。
+- 键盘：Tab 可达 skip link、侧栏折叠、展开器、SKU / 模式、运行、七个 tab；focus 为 `solid 2px #9C631C`。
 - 动效：`prefers-reduced-motion: reduce` 下 `transition-duration` / `animation-duration` 均为 `0s`，信息不依赖动画。
 - 只使用 `AGENTS.md` 声明的 `unslop`（已安装到 `.claude/skills/unslop`，CC BY 4.0，署名保留在 `SKILL.md`）。
 - 注：Streamlit 固定侧栏在 full-page 截图中会错位，因此状态截图用视口截图；页面级横向滚动仍按 `scrollWidth` 实测为 0。

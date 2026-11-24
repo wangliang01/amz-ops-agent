@@ -11,6 +11,7 @@ from agent.nodes.compliance import make_compliance_node
 from agent.nodes.executor import make_executor_node
 from agent.nodes.insight import make_insight_node
 from agent.nodes.listing import make_listing_node
+from agent.nodes.ops import make_ops_node
 from agent.nodes.supervisor import make_supervisor_node
 from agent.services import Services
 from agent.state import AgentState
@@ -36,6 +37,7 @@ def build_graph(
     builder.add_node("listing", make_listing_node(services))
     builder.add_node("compliance", make_compliance_node(services))
     builder.add_node("ads", make_ads_node(services))
+    builder.add_node("ops", make_ops_node(services))
     builder.add_node("executor", make_executor_node(services))
 
     builder.add_edge(START, "supervisor")
@@ -51,7 +53,8 @@ def build_graph(
         route_after_compliance,
         {"ads": "ads", "executor": "executor"},
     )
-    builder.add_edge("ads", "executor")
+    builder.add_edge("ads", "ops")
+    builder.add_edge("ops", "executor")
     builder.add_edge("executor", END)
 
     return builder.compile(

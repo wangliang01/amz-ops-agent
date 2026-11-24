@@ -9,6 +9,7 @@ from typing import Any
 from langgraph.checkpoint.sqlite import SqliteSaver
 
 from agent.graph import build_graph
+from agent.opportunity import rank_opportunities
 from agent.services import build_services
 from core import db
 from core.config import settings
@@ -90,6 +91,12 @@ class LocalBackend:
                 }
                 for sku in self.services.store.skus.values()
             ]
+
+    def opportunities(self) -> dict[str, Any]:
+        with self._lock:
+            self._ensure()
+            assert self.services is not None
+            return rank_opportunities(self.services.store)
 
     def create_run(self, payload: dict[str, Any]) -> dict[str, Any]:
         mode = str(payload.get("mode") or "full_chain")

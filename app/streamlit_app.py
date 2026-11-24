@@ -648,6 +648,8 @@ def get(path: str, timeout: int = 30) -> dict[str, Any]:
         backend = _local_backend()
         if path == "/metrics":
             return backend.metrics()
+        if path == "/opportunities":
+            return backend.opportunities()
         if path.startswith("/runs/"):
             return backend.get_run(path[len("/runs/") :])
         raise ValueError(f"unsupported local GET path: {path}")
@@ -1459,6 +1461,153 @@ def render_ads(ads: dict[str, Any]) -> None:
         st.json(backtest)
 
 
+OPPORTUNITY_LABELS = {
+    "demand": "需求",
+    "rating": "评分",
+    "pain": "痛点密度",
+    "competition": "竞争密度",
+    "margin": "毛利空间",
+}
+
+OPS_ACTION_LABELS = {
+    "reorder_now": "立即补货",
+    "watch": "关注库存",
+    "healthy": "库存健康",
+    "no_sales_signal": "暂无销量信号",
+    "decrease": "收紧预算",
+    "increase": "放量",
+    "hold": "维持",
+    "raise_to_floor": "提价到毛利底价",
+}
+
+
+def _driver_rows(item: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {
+            "name": OPPORTUNITY_LABELS.get(driver["name"], driver["name"]),
+            "value": f"{float(driver['value']):.0%}",
+            "contribution": f"{float(driver['contribution']):.1f}",
+        }
+        for driver in item.get("drivers") or []
+    ]
+
+
+def render_opportunity(
+    opportunities: dict[str, Any],
+    ops_plan: dict[str, Any] | None,
+) -> None:
+    items = opportunities.get("items") or []
+    error = opportunities.get("error")
+    if error:
+        st.caption(f"机会排名不可用：{error}")
+
+    st.markdown('<div class="section-title">机会排名</div>', unsafe_allow_html=True)
+    if items:
+        weight_text = " · ".join(
+            f"{OPPORTUNITY_LABELS.get(name, name)} {float(value):.0%}"
+            for name, value in (opportunities.get("weights") or {}).items()
+        )
+        st.markdown(
+            f'<div class="lead">按需求、评分、痛点密度、竞争密度和毛利空间的加权分排序；'
+            f'权重 {e(weight_text)}。</div>',
+            unsafe_allow_html=True,
+        )
+    rows = [
+        {
+            "rank": item.get("rank"),
+            "sku_id": item.get("sku_id"),
+            "subcategory": item.get("subcategory"),
+            "score": f"{float(item.get('score') or 0):.1f}",
+            "rating": f"{float(item.get('rating') or 0):.1f}",
+            "reviews": f"{int(item.get('review_count') or 0):,}",
+            "pain": f"{float((item.get('components') or {}).get('pain') or 0):.0%}",
+            "competition": f"{float((item.get('components') or {}).get('competition') or 0):.0%}",
+        }
+        for item in items
+    ]
+    render_table(
+        rows,
+        [
+            ("rank", "排名", "mono"),
+            ("sku_id", "SKU", "mono"),
+            ("subcategory", "子类", ""),
+            ("score", "机会分", "mono"),
+            ("rating", "评分", "mono"),
+            ("reviews", "评论数", "mono"),
+            ("pain", "痛点密度", "mono"),
+            ("competition", "竞争密度", "mono"),
+        ],
+        empty="暂无机会数据",
+    )
+
+    for item in items[:3]:
+        with st.expander(
+            f"#{item.get('rank')} {item.get('sku_id')} · "
+            f"{float(item.get('score') or 0):.1f} 分 · {item.get('subcategory')}"
+        ):
+            st.markdown(
+                f'<div class="cell-note">{e(item.get("title"))}</div>',
+                unsafe_allow_html=True,
+            )
+            render_table(
+                _driver_rows(item),
+                [
+                    ("name", "驱动因素", ""),
+                    ("value", "得分", "mono"),
+                    ("contribution", "贡献", "mono"),
+                ],
+                empty="暂无驱动因素",
+            )
+            for evidence in item.get("evidence") or []:
+                st.markdown(
+                    f'<div class="lead">“{e(evidence.get("quote"))}”</div>'
+                    f'<div class="cell-note">{e(evidence.get("rating"))} 星 · '
+                    f'{e(evidence.get("date"))} · {e(evidence.get("review_id"))}</div>',
+                    unsafe_allow_html=True,
+                )
+
+    st.markdown('<div class="section-title">补货 / 预算 / 定价</div>', unsafe_allow_html=True)
+    if not ops_plan:
+        st.markdown(
+            '<div class="empty-row">运行 full_chain 或 ads_only 后生成补货与预算计划。</div>',
+            unsafe_allow_html=True,
+        )
+        return
+    inventory = ops_plan.get("inventory") or {}
+    budget = ops_plan.get("budget") or {}
+    price = ops_plan.get("price_guardrail") or {}
+    roi = ops_plan.get("roi") or {}
+    days = inventory.get("days_of_cover")
+    st.markdown(
+        f"""
+        <div class="mini-band">
+          <div class="stat"><div class="stat-label">在库 / 可售</div>
+            <div class="stat-value">{e(int(inventory.get("on_hand") or 0))} 件</div>
+            <div class="stat-note">{e("—" if days is None else f"{days} 天")} · {e(OPS_ACTION_LABELS.get(str(inventory.get("status")), inventory.get("status")))}</div></div>
+          <div class="stat"><div class="stat-label">补货点 / 建议补货</div>
+            <div class="stat-value">{e(int(inventory.get("reorder_point") or 0))} 件</div>
+            <div class="stat-note">建议补 {e(int(inventory.get("reorder_qty") or 0))} 件（{e(int(inventory.get("lead_time_days") or 0))} 天提前期 + {e(int(inventory.get("safety_days") or 0))} 天安全库存）</div></div>
+          <div class="stat"><div class="stat-label">日预算</div>
+            <div class="stat-value">${e(fmt_num(budget.get("daily_budget")))} → ${e(fmt_num(budget.get("proposed_daily_budget")))}</div>
+            <div class="stat-note">ACOS {e(fmt_pct(budget.get("acos_30d")))} / 目标 {e(fmt_pct(budget.get("target_acos")))} · {e(OPS_ACTION_LABELS.get(str(budget.get("action")), budget.get("action")))}</div></div>
+        </div>
+        <div class="mini-band">
+          <div class="stat"><div class="stat-label">价格护栏</div>
+            <div class="stat-value">${e(fmt_num(price.get("floor_price")))}–${e(fmt_num(price.get("ceiling_price")))}</div>
+            <div class="stat-note">当前 ${e(fmt_num(price.get("current_price")))} · {e(OPS_ACTION_LABELS.get(str(price.get("action")), price.get("action")))}</div></div>
+          <div class="stat"><div class="stat-label">人工分钟节省</div>
+            <div class="stat-value">{e(int(roi.get("human_minutes_saved") or 0))} 分钟</div>
+            <div class="stat-note">按节点固定估算，非工时实测</div></div>
+          <div class="stat"><div class="stat-label">净收益</div>
+            <div class="stat-value">${e(fmt_num(roi.get("net_value_usd")))}</div>
+            <div class="stat-note">人工价值 ${e(fmt_num(roi.get("labor_value_usd")))} − LLM ${e(fmt_num(roi.get("llm_cost_usd")))}</div></div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.caption("库存、成本、销量、日预算为模拟数据；评分、评论与标价为真实公开数据。")
+
+
 def render_audit(state: dict[str, Any], snapshot: dict[str, Any]) -> None:
     logs = state.get("execution_log") or []
     proposals = state.get("proposals") or []
@@ -1527,7 +1676,10 @@ def render_audit(state: dict[str, Any], snapshot: dict[str, Any]) -> None:
     )
 
 
-def render_metrics(metrics: dict[str, Any]) -> None:
+def render_metrics(
+    metrics: dict[str, Any],
+    ops_plan: dict[str, Any] | None = None,
+) -> None:
     node_times = metrics.get("node_times") or {}
     items = [
         {"node": node, "value": float(value)}
@@ -1562,6 +1714,29 @@ def render_metrics(metrics: dict[str, Any]) -> None:
         """,
         unsafe_allow_html=True,
     )
+
+    roi = (ops_plan or {}).get("roi") or {}
+    if roi:
+        acos_delta = roi.get("projected_acos_delta")
+        acos_note = "—" if acos_delta is None else f"{float(acos_delta):+.1%}"
+        st.markdown('<div class="section-title">ROI</div>', unsafe_allow_html=True)
+        st.markdown(
+            f"""
+            <div class="mini-band">
+              <div class="stat"><div class="stat-label">人工分钟节省</div>
+                <div class="stat-value">{e(int(roi.get("human_minutes_saved") or 0))} 分钟</div>
+                <div class="stat-note">人工价值 ${e(fmt_num(roi.get("labor_value_usd")))}（${e(fmt_num(roi.get("hourly_rate_usd")))}/h 演示假设）</div></div>
+              <div class="stat"><div class="stat-label">LLM 成本</div>
+                <div class="stat-value">${e(fmt_num(roi.get("llm_cost_usd")))}</div>
+                <div class="stat-note">本次运行；无 key 时为 $0</div></div>
+              <div class="stat"><div class="stat-label">净收益</div>
+                <div class="stat-value">${e(fmt_num(roi.get("net_value_usd")))}</div>
+                <div class="stat-note">预计 ACOS {e(acos_note)} · 合规修复 {e(int(roi.get("compliance_fixes") or 0))}</div></div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.caption("人工分钟、时薪与 ACOS 变化均为估算；ACOS 来自广告回测的弹性假设，不是线上实测。")
 
     with st.expander("本次运行指标"):
         st.json(metrics)
@@ -1608,10 +1783,15 @@ def main() -> None:
     listing = state.get("draft_listing") or {}
     compliance = state.get("compliance_report") or {}
     ads = state.get("ads_report") or {}
+    ops_plan = state.get("ops_plan") or {}
+    try:
+        opportunities = get("/opportunities")
+    except Exception as exc:
+        opportunities = {"items": [], "error": str(exc)}
 
     render_status_band(snapshot, metrics, state)
 
-    tabs = st.tabs(["洞察", "Listing", "合规", "广告", "审计", "指标"])
+    tabs = st.tabs(["洞察", "Listing", "合规", "广告", "选品", "审计", "指标"])
     with tabs[0]:
         render_insight(insights)
     with tabs[1]:
@@ -1621,9 +1801,11 @@ def main() -> None:
     with tabs[3]:
         render_ads(ads)
     with tabs[4]:
-        render_audit(state, snapshot)
+        render_opportunity(opportunities, ops_plan)
     with tabs[5]:
-        render_metrics(metrics)
+        render_audit(state, snapshot)
+    with tabs[6]:
+        render_metrics(metrics, ops_plan)
 
 
 if __name__ == "__main__":

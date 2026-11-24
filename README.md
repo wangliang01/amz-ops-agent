@@ -17,7 +17,9 @@
 | 数据链路 | 真实 Amazon 公开评论与商品元数据（品牌匿名）+ 模拟 90 天广告数据；建议可回测 |
 | Multi-Agent 编排 | LangGraph 状态图、Supervisor 路由、HITL 断点、失败降级 |
 | RAG | Chroma/BM25 混合检索、RRF、metadata 过滤、引用、10 条 golden case |
-| 量化 | 合规通过率、修复数、ACOS 变化、预计花费变化、单次成本 |
+| 选品机会 | 5 个真实 SKU 的加权机会分：需求、评分、痛点密度、竞争密度、毛利空间 + 评论证据 |
+| 库存 / 预算 / 定价 | 可售天数、补货点与补货量、日预算调整、毛利底价护栏（模拟假设逐项标注） |
+| 量化 / ROI | 合规通过率、修复数、ACOS 变化、预计花费变化、单次成本、人工分钟节省与净收益 |
 
 ---
 
@@ -138,13 +140,14 @@ Streamlit 单页 ──HTTP──> FastAPI ──> LangGraph
 | Listing | 检索历史高转化 Listing + 政策，生成标题/五点/描述/关键词 | 模板 + 关键词库 |
 | Compliance | 21 条规则 + LLM 复核；同时检查当前 Listing 和新草稿 | 仅规则检查 |
 | Ads | 90 天趋势、异常检测、关键词出价建议、30 天回测 | 规则降价/加价 |
+| Ops | 可售天数、补货点/补货量、日预算调整、价格护栏、ROI | 固定公式 + 显式模拟假设 |
 | Executor | HITL 审批后 dry-run，写审计日志和指标 | 拒绝/未审批时跳过 |
 
 模式：
 
-- `full_chain`：Insight → Listing → Compliance → Ads → Approval → Executor
+- `full_chain`：Insight → Listing → Compliance → Ads → Ops → Approval → Executor
 - `listing_only`：Insight → Listing → Compliance → Approval → Executor
-- `ads_only`：Ads → Approval → Executor
+- `ads_only`：Ads → Ops → Approval → Executor
 - `auto`：由 Supervisor 选择
 
 ---
@@ -199,6 +202,9 @@ Streamlit 单页 ──HTTP──> FastAPI ──> LangGraph
 - `cost_usd`：按模型价格表估算，不是账单金额。
 - `compliance_pass_rate`：没有 `block` 级问题的运行占比。
 - 广告回测：基于弹性假设的估算，不是线上实测。
+- 机会分：需求 / 评分 / 痛点密度 / 竞争密度 / 毛利空间的固定权重加权分（30/20/25/15/10），不是销量预测。
+- 补货 / 预算 / 定价：库存、日销、提前期、安全库存、成本、广告预算均为模拟；输出里逐项标注。
+- ROI：人工分钟节省按节点固定估算，时薪与 ACOS 变化都是假设，不是工时或线上实测。
 
 ## 验证状态
 
@@ -206,7 +212,8 @@ Streamlit 单页 ──HTTP──> FastAPI ──> LangGraph
 
 - CLI：`scripts/run_demo.py` 全链路通过，审批后 5 条 dry-run 动作。
 - API：`/runs` → `awaiting_approval` → `/approve` → `completed`。
-- UI：Streamlit 页面渲染、运行、审批、审计、指标均通过。
+- UI：Streamlit 页面渲染、运行、审批、审计、指标均通过；选品排名与 ROI 面板已浏览器实测。
+- 运营计划：`scripts/verify_ops` 通过（5 个 SKU 确定性排名、补货/预算/定价字段、5 条 dry-run）。
 - 评测：无 LLM 兜底 10/10；真实 LLM `--require-llm` 9/10（`G-003` 草稿未包含精确短语 `nail art drill`，其余 9 条通过；未为过测放宽 golden）。
 - 数据：5 个真实商品 + 250 条真实评论 + 20 条真实历史 Listing；广告/库存/成本为模拟。
 - 部署：Streamlit Community Cloud 在线 Demo 已跑通审批与 dry-run。
@@ -224,7 +231,9 @@ amz-ops-agent/
 │   ├── graph.py              # LangGraph 状态图
 │   ├── state.py              # AgentState
 │   ├── services.py           # LLM / Store / Retriever 装配
-│   └── nodes/                # supervisor / insight / listing / compliance / ads / executor
+│   ├── opportunity.py        # 选品机会排名（确定性加权分 + 评论证据）
+│   ├── ops_plan.py           # 补货 / 预算 / 定价 / ROI（模拟假设）
+│   └── nodes/                # supervisor / insight / listing / compliance / ads / ops / executor
 ├── api/main.py               # FastAPI
 ├── app/streamlit_app.py      # 演示台
 ├── core/
@@ -240,7 +249,7 @@ amz-ops-agent/
 │   ├── generate_seed.py      # 合成数据兜底（默认拒绝覆盖真实种子）
 │   └── seed/                 # SKU / 评论 / Listing / 广告 / 规则 / 政策 / PROVENANCE
 ├── evals/                    # golden set + 评测脚本
-├── scripts/                  # CLI demo + smoke test
+├── scripts/                  # CLI demo + smoke test + verify_ops / verify_ui
 ├── requirements.txt
 ├── run.ps1
 └── .env.example
@@ -254,6 +263,7 @@ amz-ops-agent/
 |---|---|---|
 | `GET` | `/health` | 健康检查、LLM/向量索引状态 |
 | `GET` | `/skus` | 可选 SKU 列表 |
+| `GET` | `/opportunities` | 选品机会排名（加权分、驱动因素、评论证据） |
 | `POST` | `/runs` | 创建并运行，返回 `awaiting_approval` 或 `completed` |
 | `GET` | `/runs/{id}` | 查询运行状态和状态快照 |
 | `POST` | `/runs/{id}/approve` | `approved` / `rejected`，恢复图执行 |
@@ -302,8 +312,9 @@ Invoke-RestMethod "http://127.0.0.1:8000/runs/$($run.run_id)/approve" -Method Po
 4. **Listing**：新标题/五点，引用真实历史高转化 Listing。
 5. **Compliance**：当前 Listing 的真实宣称（medical grade、Made in USA、Guarantee）被规则命中，新草稿通过。
 6. **Ads**：ACOS 偏高、花费上涨、5 条降价建议、30 天回测（广告为模拟数据）。
-7. 侧边栏 **Approve**：执行器写 dry-run 审计日志。
-8. **Metrics**：耗时、token、成本、合规通过率。
+7. **选品**：5 个 SKU 的机会排名、驱动因素与真实评论证据；下方是补货、日预算、价格护栏。
+8. 侧边栏 **Approve**：执行器写 dry-run 审计日志。
+9. **Metrics**：耗时、token、成本、合规通过率、ROI（人工分钟节省、净收益）。
 
 ---
 

@@ -13,7 +13,7 @@ APP = Path(
         str(Path(__file__).resolve().parents[1] / "app" / "streamlit_app.py"),
     )
 )
-EXPECTED_TABS = ["洞察", "Listing", "合规", "广告", "审计", "指标"]
+EXPECTED_TABS = ["洞察", "Listing", "合规", "广告", "选品", "审计", "指标"]
 EXPECTED_ACTIONS = 5
 
 
@@ -87,7 +87,7 @@ def main() -> int:
     assert log[0].get("status") == "rejected", log[0].get("status")
 
     print(
-        "UI_VERIFY_OK tabs=6 awaiting_approval=ok "
+        "UI_VERIFY_OK tabs=7 awaiting_approval=ok "
         "approve=5_dry_run reject=1_skip errors=0"
     )
     return 0

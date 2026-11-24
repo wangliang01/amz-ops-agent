@@ -38,6 +38,13 @@ class SeedStore:
             (seed / "ads_keywords.json").read_text(encoding="utf-8")
         )
         self.ads_daily = pd.read_csv(seed / "ads_daily.csv")
+        self.historical_listings: list[dict[str, Any]] = [
+            json.loads(line)
+            for line in (seed / "historical_listings.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if line.strip()
+        ]
 
     def sku(self, sku_id: str) -> dict[str, Any]:
         if sku_id not in self.skus:

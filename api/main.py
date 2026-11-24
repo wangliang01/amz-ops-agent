@@ -10,6 +10,7 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 from pydantic import BaseModel, Field
 
 from agent.graph import build_graph
+from agent.opportunity import rank_opportunities
 from agent.services import build_services
 from core import db
 from core.config import settings
@@ -97,6 +98,11 @@ def list_skus() -> list[dict[str, Any]]:
         }
         for sku in services.store.skus.values()
     ]
+
+
+@app.get("/opportunities")
+def opportunities() -> dict[str, Any]:
+    return rank_opportunities(services.store)
 
 
 @app.post("/runs")
